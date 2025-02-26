@@ -1,1 +1,1 @@
-web: gunicorn backend.urbanatura_cdmx.wsgi:application
+web: cd backend && gunicorn urbanatura_cdmx.wsgi:application
