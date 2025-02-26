@@ -79,17 +79,39 @@ WSGI_APPLICATION = 'urbanatura_cdmx.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'urbanatura_db',
+#         'USER': 'urbanatura_user',
+#         'PASSWORD': 'mael123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'urbanatura_db',
-        'USER': 'urbanatura_user',
-        'PASSWORD': 'mael123',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': 'railway',  # Nombre de la base de datos
+        'USER': 'postgres',  # Usuario de la base de datos
+        'PASSWORD': 'GyogpiRfPAVNwzIVnRPVOoRvzOqSAJpN',  # Contraseña de la base de datos
+        'HOST': 'postgres.railway.internal',  # Host de la base de datos
+        'PORT': '5432',  # Puerto de la base de datos
     }
 }
 
+import os
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('urbanatura_db'),
+        'USER': os.environ.get('urbanatura_user'),
+        'PASSWORD': os.environ.get('mael123'),
+        'HOST': os.environ.get('localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),  # 5432 es el puerto por defecto
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
