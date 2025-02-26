@@ -1,0 +1,91 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo h1 {
+    margin: 0;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.mapa {
+    background-color: #fff;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.botones {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.botones .btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.botones .btn:hover {
+    background-color: #45a049;
+}
+
+/* Nuevos estilos para la lista de árboles */
+.arboles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espacio entre tarjetas */
+    margin: 20px;
+}
+
+.arbol-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    width: 300px; /* Ancho de la tarjeta */
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.arbol-foto {
+    width: 100px; /* Ancho de la foto */
+    height: auto; /* Mantener la proporción */
+    border-radius: 8px;
+    margin-right: 10px; /* Espacio entre la foto y la info */
+}
+
+.arbol-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centrar la info verticalmente */
+}
+
+.arbol-info h2 {
+    margin-top: 0;
+}
+
+.arbol-info p {
+    margin-bottom: 10px;
+}

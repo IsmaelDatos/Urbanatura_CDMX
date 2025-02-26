@@ -1,0 +1,164 @@
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urbanatura CDMX - Inicio</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400&display=swap" rel="stylesheet">
+    <style>
+        .header-container {
+            display: flex;
+            align-items: center;
+        }
+        .logo-urbana {
+            width: 50px;
+            margin-right: 10px;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+        }
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            margin: 20px 0;
+        }
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            margin: 20px 0;
+        }
+        p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .botones {
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <img src="{% static 'images/urbanatura.png' %}" alt="Logo de Urbanatura" class="logo-urbana">
+            <h1>Urbanatura CDMX</h1>
+        </div>
+        <nav>
+            <a href="{% url 'inicio' %}">Inicio</a>
+            <a href="{% url 'documentacion' %}">Documentación</a>
+        </nav>
+    </header>
+    <main>
+        <div class="objetivo">
+            <h2>Objetivo</h2>
+            <p>El objetivo de Urbanatura es crear un inventario digital del arbolado en la Ciudad de México, permitiendo a ciudadanos y especialistas registrar, monitorear y analizar el estado de los árboles urbanos.</p>
+        </div>
+        <div class="mapa">
+            <h2>Mapa</h2>
+            <p>Este es un espacio reservado para el mapa interactivo.</p>
+        </div>
+        <div class="botones">
+            <a href="{% url 'agregar_arbol' %}" class="btn">Agregar</a>
+            <a href="{% url 'lista_arboles' %}" class="btn">Eliminar</a>
+            <a href="{% url 'lista_arboles' %}" class="btn">Modificar</a>
+            <a href="{% url 'lista_arboles' %}" class="btn">Ver lista de árboles</a>
+        </div>
+    </main>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html> {% endcomment %}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urbanatura CDMX - Inicio</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400&display=swap" rel="stylesheet">
+    <style>
+        .header-container {
+            display: flex;
+            align-items: center;
+        }
+        .logo-urbana {
+            width: 50px;
+            margin-right: 10px;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+        }
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            margin: 20px 0;
+        }
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            margin: 20px 0;
+        }
+        p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .botones {
+            margin: 20px 0;
+        }
+        .btn {
+            display: inline-block;
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <img src="{% static 'images/urbanatura.png' %}" alt="Logo de Urbanatura" class="logo-urbana">
+            <h1>Urbanatura CDMX</h1>
+        </div>
+        <nav>
+            <a href="{% url 'inicio' %}">Inicio</a>
+            <a href="{% url 'documentacion' %}">Documentación</a>
+            <a href="https://www.sedema.cdmx.gob.mx/" target="_blank">Sobre Nosotros</a>
+        </nav>
+    </header>
+    <main>
+        <div class="objetivo">
+            <h2>Objetivo</h2>
+            <p>El objetivo de Urbanatura es crear un inventario digital del arbolado en la Ciudad de México, permitiendo a ciudadanos y especialistas registrar, monitorear y analizar el estado de los árboles urbanos.</p>
+        </div>
+        <div class="mapa">
+            <h2>Mapa</h2>
+            <p>Este es un espacio reservado para el mapa interactivo.</p>
+        </div>
+        <div class="botones">
+            <a href="{% url 'agregar_arbol' %}" class="btn">Agregar</a>
+            <a href="{% url 'lista_arboles' %}" class="btn">Eliminar</a>
+            <a href="{% url 'lista_arboles' %}" class="btn">Modificar</a>
+            <a href="{% url 'lista_arboles' %}" class="btn">Ver lista de árboles</a>
+        </div>
+    </main>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
