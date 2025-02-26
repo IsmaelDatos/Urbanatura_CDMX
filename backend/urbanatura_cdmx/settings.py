@@ -105,11 +105,11 @@ import os
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('urbanatura_db'),
-        'USER': os.environ.get('urbanatura_user'),
-        'PASSWORD': os.environ.get('mael123'),
-        'HOST': os.environ.get('localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),  # 5432 es el puerto por defecto
+        'NAME': 'urbanatura_db',
+        'USER': 'urbanatura_user',
+        'PASSWORD': 'mael123',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
