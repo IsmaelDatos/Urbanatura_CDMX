@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación - Urbanatura CDMX</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Estilos básicos para el índice y el contenido */
+        .container {
+            display: flex;
+        }
+        .indice {
+            width: 200px;
+            margin-right: 20px;
+        }
+        .contenido {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Documentación</h1>
+        <nav>
+            <a href="{% url 'arbol:inicio' %}">Inicio</a>
+            <a href="{% url 'arbol:lista_arboles' %}">Lista de Árboles</a>
+            <a href="{% url 'arbol:agregar_arbol' %}">Agregar Árbol</a>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="indice">
+            <h2>Índice</h2>
+            <ul>
+                <li><a href="#" onclick="mostrarContenido('introduccion')">Introducción</a></li>
+                <li><a href="#" onclick="mostrarContenido('mision')">Misión y Visión</a></li>
+            </ul>
+            <a href="{% url 'arbol:informacion_empresa' %}">
+                <img src="{% static 'images/powered.png' %}" alt="Información de la Empresa" style="width: 100%; cursor: pointer;">
+            </a>
+        </div>
+        <div class="contenido" id="contenido">
+            <h2>Selecciona un tema del índice</h2>
+            <p>El contenido se mostrará aquí.</p>
+        </div>
+    </div>
+
+    <script>
+        function mostrarContenido(tema) {
+            const contenido = document.getElementById('contenido');
+            if (tema === 'introduccion') {
+                contenido.innerHTML = '<h2>Introducción</h2><p>Contenido sobre la introducción.</p>';
+            } else if (tema === 'mision') {
+                contenido.innerHTML = '<h2>Misión y Visión</h2><p>Contenido sobre la misión y visión.</p>';
+            }
+        }
+    </script>
+</body>
+</html>

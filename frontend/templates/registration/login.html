@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    .toggle-switch {
+      display: flex;
+      align-items: center;
+      background-color: #d9f99d;
+      border-radius: 9999px;
+      padding: 0.5rem;
+      cursor: pointer;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .toggle-switch div {
+      flex: 1;
+      text-align: center;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+    }
+
+    .toggle-switch .active {
+      background-color: #047857;
+      color: white;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .error-message {
+      color: #ef4444;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body class="bg-white font-roboto"> 
+  <main class="flex flex-col items-center p-8">
+    <div class="bg-lime-200 p-8 rounded-lg shadow-lg w-full max-w-4xl">
+      <h1 class="text-2xl font-bold mb-6 text-center">Iniciar sesión</h1>
+      
+      <!-- Formulario de inicio de sesión -->
+      <form id="login-form" method="POST" action="{% url 'usuarios:login' %}" class="space-y-4">
+        {% csrf_token %}
+        <div>
+          <input name="email" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Correo electrónico" type="email" required/>
+          <div id="email-error" class="error-message hidden"></div>
+        </div>
+        <div>
+          <input name="password" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Contraseña" type="password" required/>
+          <div id="password-error" class="error-message hidden"></div>
+        </div>
+        <div class="text-left">
+          <a class="text-green-600 hover:underline" href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+        <button class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition duration-200" type="submit">Iniciar sesión</button>
+      </form>
+      
+      <div class="mt-4 text-center">
+        <p class="text-gray-600">¿No tienes una cuenta? <a href="{% url 'usuarios:registrar_ciudadano' %}" class="text-green-600 hover:underline">Regístrate</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('login-form');
+      
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(loginForm);
+        
+        // Limpiar errores previos
+        document.querySelectorAll('.error-message').forEach(el => {
+          el.classList.add('hidden');
+          el.textContent = '';
+        });
+        
+        fetch(loginForm.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            window.location.href = data.redirect_url || "{% url 'arbol:inicio' %}";
+          } else {
+            // Mostrar errores de validación
+            if (data.errors) {
+              for (const [field, error] of Object.entries(data.errors)) {
+                const errorElement = document.getElementById(`${field}-error`);
+                if (errorElement) {
+                  errorElement.textContent = error;
+                  errorElement.classList.remove('hidden');
+                }
+              }
+            } else {
+              alert('Error: ' + (data.error || 'Credenciales inválidas'));
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al conectar con el servidor');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+{% endblock %}

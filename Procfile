@@ -1,1 +1,0 @@
-web: cd backend && python manage.py collectstatic --noinput && gunicorn urbanatura_cdmx.wsgi:application

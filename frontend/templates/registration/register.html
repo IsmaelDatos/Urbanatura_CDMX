@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    .toggle-switch {
+      display: flex;
+      align-items: center;
+      background-color: #d9f99d;
+      border-radius: 9999px;
+      padding: 0.5rem;
+      cursor: pointer;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .toggle-switch div {
+      flex: 1;
+      text-align: center;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+    }
+
+    .toggle-switch .active {
+      background-color: #047857;
+      color: white;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .error-message {
+      color: #ef4444;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body class="bg-white font-roboto"> 
+  <main class="flex flex-col items-center p-8">
+    <div class="bg-lime-200 p-8 rounded-lg shadow-lg w-full max-w-4xl">
+      <h1 class="text-2xl font-bold mb-6 text-center">Registro de usuario</h1>
+      
+      <!-- Toggle switch para tipo de registro -->
+      <div class="toggle-switch mb-6">
+        <div class="active" id="person-tab" onclick="toggleRegisterType('person')">Persona</div>
+        <div id="institution-tab" onclick="toggleRegisterType('institution')">Institución</div>
+      </div>
+      
+      <!-- Formulario de registro para persona -->
+      <form id="person-form" method="POST" action="{% url 'usuarios:registrar_ciudadano' %}" class="space-y-4">
+        {% csrf_token %}
+        <div class="bg-lime-100 p-4 rounded-lg mb-4">
+          <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-300">Dirección</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Calle</label>
+              <input name="calle" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Ingresa el nombre de la calle" type="text" required/>
+              <div id="calle-error" class="error-message hidden"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Número exterior</label>
+              <input name="num_ext" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Número exterior" type="text" required/>
+              <div id="num_ext-error" class="error-message hidden"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Número interior</label>
+              <input name="num_int" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Número interior (opcional)" type="text"/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Entidad federativa</label>
+              <input name="entidad_federativa" class="w-full p-2 rounded-lg border border-gray-300" value="CDMX" readonly required/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Alcaldía</label>
+              <select name="municipio" class="w-full p-2 rounded-lg border border-gray-300" required>
+                <option value="">Selecciona una alcaldía</option>
+                <option value="Álvaro Obregón">Álvaro Obregón</option>
+                <option value="Azcapotzalco">Azcapotzalco</option>
+                <option value="Benito Juárez">Benito Juárez</option>
+                <option value="Coyoacán">Coyoacán</option>
+                <option value="Cuajimalpa de Morelos">Cuajimalpa de Morelos</option>
+                <option value="Gustavo A. Madero">Gustavo A. Madero</option>
+                <option value="Iztacalco">Iztacalco</option>
+                <option value="Iztapalapa">Iztapalapa</option>
+                <option value="La Magdalena Contreras">La Magdalena Contreras</option>
+                <option value="Milpa Alta">Milpa Alta</option>
+                <option value="Miguel Hidalgo">Miguel Hidalgo</option>
+                <option value="Tláhuac">Tláhuac</option>
+                <option value="Tlalpan">Tlalpan</option>
+                <option value="Venustiano Carranza">Venustiano Carranza</option>
+                <option value="Xochimilco">Xochimilco</option>            
+              </select>
+              <div id="municipio-error" class="error-message hidden"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Código postal</label>
+              <input name="codigo_postal" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Código postal" type="text" pattern="[0-9]{5}" title="El código postal debe tener 5 dígitos" required/>
+              <div id="codigo_postal-error" class="error-message hidden"></div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Referencias</label>
+            <input name="referencias" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Referencias adicionales" type="text"/>
+          </div>
+        </div>
+        
+        <div class="bg-lime-100 p-4 rounded-lg">
+          <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-300">Datos personales</h2>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+            <input name="email" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Correo electrónico" type="email" required/>
+            <div id="email-error" class="error-message hidden"></div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+            <input name="password1" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Contraseña" type="password" required/>
+            <div id="password1-error" class="error-message hidden"></div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Confirmar contraseña</label>
+            <input name="password2" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Confirmar contraseña" type="password" required/>
+            <div id="password2-error" class="error-message hidden"></div>
+          </div>
+          <div class="flex space-x-4 mb-4">
+            <div class="w-full">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+              <input name="first_name" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Nombre" type="text" required/>
+              <div id="first_name-error" class="error-message hidden"></div>
+            </div>
+            <div class="w-full">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Primer apellido</label>
+              <input name="primer_apellido" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Primer apellido" type="text" required/>
+              <div id="primer_apellido-error" class="error-message hidden"></div>
+            </div>
+            <div class="w-full">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Segundo apellido</label>
+              <input name="segundo_apellido" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Segundo apellido" type="text"/>
+            </div>
+          </div>
+          <button class="w-full bg-green-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-800 transition duration-200" type="submit">Registrarse</button>
+        </div>
+      </form>
+      
+      <!-- Formulario de registro para institución -->
+      <form id="institution-form" method="POST" action="{% url 'usuarios:registrar_institucion' %}" class="hidden space-y-4">
+        {% csrf_token %}
+        <!-- Sección de Dirección -->
+        <div class="bg-lime-100 p-4 rounded-lg mb-4">
+          <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-300">Dirección</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Calle</label>
+              <input name="calle" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Calle" type="text" required/>
+              <div id="institution-calle-error" class="error-message hidden"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Número exterior</label>
+              <input name="num_ext" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Número exterior" type="text" required/>
+              <div id="institution-num_ext-error" class="error-message hidden"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Número interior</label>
+              <input name="num_int" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Número interior (opcional)" type="text"/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Entidad federativa</label>
+              <input name="entidad_federativa" class="w-full p-2 rounded-lg border border-gray-300" value="CDMX" readonly required/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Alcaldía</label>
+              <select name="municipio" class="w-full p-2 rounded-lg border border-gray-300" required>
+                <option value="">Selecciona una alcaldía</option>
+                <option value="Álvaro Obregón">Álvaro Obregón</option>
+                <option value="Azcapotzalco">Azcapotzalco</option>
+                <option value="Benito Juárez">Benito Juárez</option>
+                <option value="Coyoacán">Coyoacán</option>
+                <option value="Cuajimalpa de Morelos">Cuajimalpa de Morelos</option>
+                <option value="Gustavo A. Madero">Gustavo A. Madero</option>
+                <option value="Iztacalco">Iztacalco</option>
+                <option value="Iztapalapa">Iztapalapa</option>
+                <option value="La Magdalena Contreras">La Magdalena Contreras</option>
+                <option value="Milpa Alta">Milpa Alta</option>
+                <option value="Miguel Hidalgo">Miguel Hidalgo</option>
+                <option value="Tláhuac">Tláhuac</option>
+                <option value="Tlalpan">Tlalpan</option>
+                <option value="Venustiano Carranza">Venustiano Carranza</option>
+                <option value="Xochimilco">Xochimilco</option>            
+              </select>
+              <div id="institution-municipio-error" class="error-message hidden"></div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Código postal</label>
+              <input name="codigo_postal" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Código postal" type="text" pattern="[0-9]{5}" title="El código postal debe tener 5 dígitos" required/>
+              <div id="institution-codigo_postal-error" class="error-message hidden"></div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Referencias</label>
+            <input name="referencias" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Referencias adicionales" type="text"/>
+          </div>
+        </div>
+        
+        <!-- Sección de Datos Generales -->
+        <div class="bg-lime-100 p-4 rounded-lg">
+          <h2 class="text-xl font-bold mb-4 pb-2 border-b border-gray-300">Datos de la institución</h2>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la institución</label>
+            <input name="nombre_institucion" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Nombre de la institución" type="text" required/>
+            <div id="nombre_institucion-error" class="error-message hidden"></div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">RFC de la institución</label>
+            <input name="rfc" class="w-full p-3 rounded-lg border border-gray-300" placeholder="RFC de la institución" type="text" required/>
+            <div id="rfc-error" class="error-message hidden"></div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+            <input name="email" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Correo electrónico" type="email" required/>
+            <div id="institution-email-error" class="error-message hidden"></div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+            <input name="password1" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Contraseña" type="password" required/>
+            <div id="institution-password1-error" class="error-message hidden"></div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Confirmar contraseña</label>
+            <input name="password2" class="w-full p-3 rounded-lg border border-gray-300" placeholder="Confirmar contraseña" type="password" required/>
+            <div id="institution-password2-error" class="error-message hidden"></div>
+          </div>
+          <button class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-700 transition duration-200" type="submit">Registrarse</button>
+        </div>
+      </form>
+      
+      <div class="mt-4 text-center">
+        <p class="text-gray-600">¿Ya tienes una cuenta? <a href="{% url 'usuarios:login' %}" class="text-green-600 hover:underline">Inicia sesión</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Funciones para los toggle switches
+    function toggleRegisterType(type) {
+      const personTab = document.getElementById('person-tab');
+      const institutionTab = document.getElementById('institution-tab');
+      const personForm = document.getElementById('person-form');
+      const institutionForm = document.getElementById('institution-form');
+
+      if (type === 'person') {
+        personTab.classList.add('active');
+        institutionTab.classList.remove('active');
+        personForm.classList.remove('hidden');
+        institutionForm.classList.add('hidden');
+      } else {
+        personTab.classList.remove('active');
+        institutionTab.classList.add('active');
+        personForm.classList.add('hidden');
+        institutionForm.classList.remove('hidden');
+      }
+    }
+
+    // Configuración del envío de formularios
+    document.addEventListener('DOMContentLoaded', function() {
+      // Configuración para el formulario de persona
+      const personForm = document.getElementById('person-form');
+      personForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitForm(personForm);
+      });
+
+      // Configuración para el formulario de institución
+      const institutionForm = document.getElementById('institution-form');
+      institutionForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitForm(institutionForm);
+      });
+    });
+
+    function submitForm(form) {
+      const formData = new FormData(form);
+      
+      // Limpiar errores previos
+      document.querySelectorAll('.error-message').forEach(el => {
+        el.classList.add('hidden');
+        el.textContent = '';
+      });
+      
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = data.redirect_url || "{% url 'arbol:inicio' %}";
+        } else {
+          // Mostrar errores de validación
+          if (data.errors) {
+            for (const [field, error] of Object.entries(data.errors)) {
+              const errorElement = document.getElementById(`${form.id}-${field}-error`) || 
+                                 document.getElementById(`${field}-error`);
+              if (errorElement) {
+                errorElement.textContent = error;
+                errorElement.classList.remove('hidden');
+              } else {
+                console.error(`No se encontró elemento para error: ${field}`);
+              }
+            }
+          } else {
+            alert('Error: ' + (data.error || 'Datos inválidos'));
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al conectar con el servidor');
+      });
+    }
+  </script>
+</body>
+</html>
+{% endblock %}

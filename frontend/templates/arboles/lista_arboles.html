@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Estilos para las tarjetas y botones */
+    .cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .tree-card {
+        width: 100%;
+        max-width: 300px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        padding: 20px;
+        background-color: white;
+        margin-bottom: 20px;
+    }
+    
+    .tree-title {
+        color: #2d8e45;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+    }
+    
+    .tree-info {
+        margin-bottom: 10px;
+    }
+    
+    .add-button {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-block;
+        margin: 20px 0;
+        border: none;
+        font-size: 16px;
+    }
+    
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+    
+    .edit-button {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .delete-button {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    /* Asegurarnos que el contenedor tenga margen */
+    .main-container {
+        padding: 0 20px;
+    }
+    
+    /* Estilos para la cabecera */
+    .page-header {
+        text-align: center;
+        margin: 30px 0;
+        color: #28a745;
+    }
+</style>
+
+<div class="main-container">
+    <!-- Botón de agregar a la izquierda -->
+    <div>
+        <a href="{% url 'arbol:agregar_arbol' %}">
+            <button class="add-button">➕ Agregar Árbol</button>
+        </a>
+    </div>
+
+    <h1 class="page-header">🌳 Lista de Árboles Registrados</h1>
+    
+    {% if arboles %}
+    <div class="cards-container">
+        {% for arbol in arboles %}
+        <div class="tree-card">
+            <div class="tree-title">🌿 {{ arbol.nombre_comun }}</div>
+            
+            <div class="tree-info">
+                <strong>📍 Ubicación:</strong> {{ arbol.calle }}{% if arbol.num_ext %}, {{ arbol.num_ext }}{% endif %}
+            </div>
+            
+            <div class="tree-info">
+                <strong>🏛️ Alcaldía:</strong> {{ arbol.municipio_alcaldia }}
+            </div>
+            
+            <div class="tree-info">
+                <strong>📏 Altura:</strong> {{ arbol.altura }} m
+            </div>
+            
+            <div class="tree-info">
+                <strong>🗓️ Fecha Registro:</strong> {{ arbol.fecha_registro|date:"d/m/Y" }}
+            </div>
+            
+            <div class="button-container">
+                <form action="{% url 'arbol:modificar_arbol' arbol.id %}" method="get">
+                    <button class="edit-button" type="submit">✏️ Editar</button>
+                </form>
+                
+                <form action="{% url 'arbol:eliminar_arbol' arbol.id %}" method="post">
+                    {% csrf_token %}
+                    <button class="delete-button" type="submit">🗑️ Eliminar</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 20px; background-color: #f8f9fa; border-radius: 10px; margin-top: 20px;">
+        No hay árboles registrados. 🌱
+        <a href="{% url 'arbol:agregar_arbol' %}" style="color: #28a745; font-weight: bold; text-decoration: none;">Agregar un árbol</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
