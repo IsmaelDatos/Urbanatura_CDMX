@@ -7,6 +7,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.arbol.urls')),  # Solo una vez
     path('usuarios/', include('apps.usuarios.urls')),
+    # path('arbol/', include('apps.arbol.urls')),
+    # path('poda/', include('apps.poda.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

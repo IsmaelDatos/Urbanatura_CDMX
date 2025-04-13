@@ -1,0 +1,250 @@
+{% load static %}
+
+<nav class="navbar">
+    <ul class="nav-enlaces">
+        <div class="nav-left">
+            <a href="{% url 'arbol:inicio' %}" id="logo" style="text-decoration: none;">UA</a>
+            <a href="{% url 'arbol:inicio' %}" style="text-decoration: none;"><p id="proyecto_nombre">Urbanatura CDMX</p></a>
+        </div>
+        
+        <div class="nav-right">
+            <li class="nav-enlace secciones">
+                <a href="{% url 'arbol:inicio' %}">Inicio<span class="arrow">▼</span></a>
+                <ul class="desplegable">
+                    <li><a href="#"><i class="fas fa-map-marked-alt" style="margin-right: 8px;"></i>Mapa</a></li>
+                    <li><a href="{% url 'arbol:lista_arboles' %}"><i class="fas fa-clipboard-list" style="margin-right: 8px;"></i>Inventario</a></li>
+                </ul>
+            </li>
+            <li class="nav-enlace secciones">
+                <a href="#">Trámites<span class="arrow">▼</span></a>
+                <ul class="desplegable">
+                    <li><a href="#"><i class="fas fa-cut" style="margin-right: 8px;"></i>Poda</a></li>
+                    <li><a href="#"><i class="fas fa-tree" style="margin-right: 8px;"></i>Derribo</a></li>
+                    <li><a href="#"><i class="fas fa-seedling" style="margin-right: 8px;"></i>Trasplante</a></li>
+                </ul>
+            </li>
+            <li class="nav-enlace secciones">
+                <a href="{% url 'arbol:informacion_empresa' %}">Nosotros<span class="arrow">▼</span></a>
+                <ul class="desplegable">
+                    <li><a href="{% url 'arbol:informacion_empresa' %}"><i class="fas fa-users" style="margin-right: 8px;"></i>Quiénes somos</a></li>
+                    <li><a href="#"><i class="fas fa-newspaper" style="margin-right: 8px;"></i>Blog</a></li>
+                    <li><a href="{% url 'arbol:documentacion' %}"><i class="fas fa-file-alt" style="margin-right: 8px;"></i>Documentación</a></li>
+                </ul>
+            </li>
+            
+            <div class="user-container">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'usuarios:logout' %}" class="user-icon" title="Cerrar sesión">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                {% else %}
+                    <a href="{% url 'usuarios:login' %}" class="user-icon" title="Iniciar sesión">
+                        <i class="fas fa-user-circle"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </ul>
+</nav>
+
+<style>
+    :root {
+        --color-primario: #176b00;
+        --color-hover: #339f00;
+        --color-texto: #ffffff;
+        --color-icono-hover: #d8d8d8;
+    }
+    
+    .navbar {
+        width: 95%;
+        max-width: 1400px;
+        display: flex;
+        padding: 0.8rem 2.5rem;
+        background: var(--color-primario);
+        border-radius: 0 0 2rem 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+    
+    .nav-enlaces {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 1.8rem;
+        margin-right: auto;
+    }
+    
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+    
+    .nav-enlace {
+        list-style: none;
+        height: 100%;
+        padding: 0.9rem 1.3rem;
+        font-weight: 700;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 1.05rem;
+        letter-spacing: 0.3px;
+        transition: all 0.25s ease;
+    }
+    
+    .desplegable li {
+        list-style: none;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .nav-enlace a {
+        text-decoration: none;
+        color: var(--color-texto);
+        display: flex;
+        align-items: center;
+    }
+    
+    .desplegable {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: max-content;
+        min-width: 100%;
+        padding: 0.4rem 0;
+        background: var(--color-hover);
+        color: var(--color-texto);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 0.8rem 0.8rem;
+        font-size: 0.95rem;
+        display: none;
+        opacity: 0;
+        transform: translateY(-8px);
+        transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    }
+    
+    .nav-enlace:hover {
+        background-color: var(--color-hover);
+        color: var(--color-texto);
+        border-radius: 0.8rem 0.8rem 0 0;
+    }
+    
+    .secciones:hover .desplegable {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .desplegable li:hover {
+        background: var(--color-primario);
+        color: var(--color-texto);
+        padding-left: 1.7rem;
+    }
+    
+    #logo {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background-color: var(--color-hover);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+    }
+    
+    #logo:hover {
+        transform: rotate(15deg);
+    }
+    
+    #proyecto_nombre {
+        color: var(--color-texto);
+        font-size: 1.4rem;
+        font-weight: 700;
+        white-space: nowrap;
+        letter-spacing: 0.5px;
+        align-items: center;  /* Centrado vertical */
+        height: 100%;        /* Ocupa toda la altura disponible */
+        margin: 0;           /* Elimina márgenes por defecto */
+        padding: 0 10px;     /* Añade un poco de espacio a los lados */
+    }
+    
+    .user-container {
+        display: flex;
+        align-items: center;
+        margin-left: 0.8rem;
+    }
+    
+    .user-icon {
+        font-size: 2.1rem;
+        color: var(--color-texto);
+        transition: all 0.3s ease;
+        padding: 0.5rem;
+    }
+    
+    .user-icon:hover {
+        color: var(--color-icono-hover);
+        transform: scale(1.1);
+    }
+    
+    .arrow {
+        display: inline-block;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        margin-left: 6px;
+        font-size: 0.7em;
+        transform-origin: center;
+    }
+    
+    .secciones:hover .arrow {
+        transform: rotate(180deg);
+    }
+    
+    /* Responsive design */
+    @media (max-width: 1200px) {
+        .navbar {
+            padding: 0.8rem 1.8rem;
+            border-radius: 0 0 1.5rem 1.5rem;
+        }
+        
+        .nav-enlace {
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+        }
+        
+        #proyecto_nombre {
+            font-size: 1.2rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .nav-enlaces {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .nav-left, .nav-right {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .desplegable {
+            position: relative;
+            width: 100%;
+            box-shadow: none;
+        }
+    }
+</style>
