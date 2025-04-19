@@ -13,78 +13,162 @@
   
   <main class="flex justify-center mt-8 mb-8">
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-      <h1 class="text-2xl font-bold mb-4 text-center">Solicitud de Trasplante</h1>
-      <form method="post" enctype="multipart/form-data">
+      <h1 class="text-2xl font-bold mb-6 text-center">Solicitud de Trasplante</h1>
+      <form method="post" enctype="multipart/form-data" id="solicitudForm">
         {% csrf_token %}
-        
-        <!-- Motivo de trasplante -->
         <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2">Motivo de trasplante</label>
+          <label class="block text-gray-700 font-medium mb-2">Motivo de trasplante*</label>
           <select name="motivo_trasplante" class="w-full p-2 border rounded focus:ring-2 focus:ring-green-500" required>
             <option value="" disabled selected>Seleccione un motivo</option>
-            <option value="conservacion">Conservación del árbol</option>
-            <option value="construccion">Obra de construcción</option>
-            <option value="mejor_ubicacion">Mejor ubicación para su desarrollo</option>
-            <option value="riesgo">Por riesgo en ubicación actual</option>
+            <option value="conservacion">Conservación del árbol en mejor ubicación</option>
+            <option value="construccion">Obra de construcción en su ubicación actual</option>
+            <option value="desarrollo">Mejor desarrollo del árbol en otra ubicación</option>
+            <option value="riesgo">Por riesgo en su ubicación actual</option>
+            <option value="plan_urbanistico">Como parte de un plan urbanístico</option>
           </select>
         </div>
-        
-        <!-- Subir foto -->
         <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2">Fotografía del árbol</label>
+          <label class="block text-gray-700 font-medium mb-2">Fotografía del árbol*</label>
           <input name="foto_trasplante" type="file" accept="image/*" class="w-full p-2 border rounded" required>
           <p class="text-xs text-gray-500 mt-1">Suba una foto clara del árbol a trasplantar</p>
         </div>
-        
-        <!-- Ubicación actual -->
         <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2">Ubicación actual del árbol</label>
+          <label class="block text-gray-700 font-medium mb-2">Ubicación actual del árbol*</label>
           <select name="ubicacion_actual_trasplante" class="w-full p-2 border rounded" required>
             <option value="" disabled selected>Seleccione ubicación</option>
             <option value="banqueta">Banqueta</option>
             <option value="camellon">Camellón</option>
-            <option value="jardin_privado">Jardín privado</option>
-            <option value="area_verde">Área verde pública</option>
+            <option value="glorieta">Glorieta</option>
+            <option value="parque">Parque</option>
+            <option value="arriate">Arriate</option>
+            <option value="plaza">Plaza</option>
+            <option value="propiedad_privada">Propiedad privada</option>
+            <option value="obra_civil">Obra civil</option>
           </select>
         </div>
-        
-        <!-- Dirección actual -->
-        <div class="mb-4">
+        <div class="mb-4 space-y-4">
           <h2 class="text-lg font-bold mb-2">Dirección actual</h2>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Calle*</label>
+            <input name="calle_actual_trasplante" placeholder="Ej. Av. Universidad" type="text" class="w-full p-2 border rounded" required>
+          </div>
+          
           <div class="grid grid-cols-2 gap-4">
-            <input name="calle_actual_trasplante" placeholder="Calle" type="text" class="w-full p-2 border rounded" required>
-            <input name="numero_ext_actual_trasplante" placeholder="Num. Ext." type="text" class="w-full p-2 border rounded" required>
-            <input name="numero_int_actual_trasplante" placeholder="Num. Int." type="text" class="w-full p-2 border rounded">
-            <input name="alcaldia_actual_trasplante" placeholder="Alcaldía" type="text" class="w-full p-2 border rounded" required>
-            <input name="colonia_actual_trasplante" placeholder="Colonia" type="text" class="w-full p-2 border rounded" required>
-            <input name="cp_actual_trasplante" placeholder="Código postal" type="text" class="w-full p-2 border rounded" required>
+            <div>
+              <label class="block text-gray-700 text-sm font-medium mb-1">Número exterior*</label>
+              <input name="numero_ext_actual_trasplante" placeholder="Ej. 789" type="text" class="w-full p-2 border rounded" required maxlength="10" pattern="\d{10}">
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-medium mb-1">Número interior</label>
+              <input name="numero_int_actual_trasplante" placeholder="Ej. 34" type="text" class="w-full p-2 border rounded">
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Alcaldía*</label>
+            <select name="alcaldia_actual_trasplante" class="w-full p-2 border rounded" required>
+              <option value="" disabled selected>Seleccione alcaldía</option>
+              <option value="alvaro_obregon">Álvaro Obregón</option>
+              <option value="azcapotzalco">Azcapotzalco</option>
+              <option value="benito_juarez">Benito Juárez</option>
+              <option value="coyoacan">Coyoacán</option>
+              <option value="cuajimalpa">Cuajimalpa de Morelos</option>
+              <option value="cuauhtemoc">Cuauhtémoc</option>
+              <option value="gustavo_madero">Gustavo A. Madero</option>
+              <option value="iztapalapa">Iztapalapa</option>
+              <option value="magdalena_contreras">La Magdalena Contreras</option>
+              <option value="miguel_hidalgo">Miguel Hidalgo</option>
+              <option value="milpa_alta">Milpa Alta</option>
+              <option value="tlahuac">Tláhuac</option>
+              <option value="tlalpan">Tlalpan</option>
+              <option value="iztacalco">Iztacalco</option>
+              <option value="xochimilco">Xochimilco</option>
+              <option value="venustiano_carranza">Venustiano Carranza</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Colonia*</label>
+            <input name="colonia_actual_trasplante" placeholder="Ej. Roma Norte" type="text" class="w-full p-2 border rounded" required>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Código Postal*</label>
+            <input name="cp_actual_trasplante" placeholder="Ej. 06700" type="text" class="w-full p-2 border rounded" required maxlength="5" pattern="\d{5}">
           </div>
         </div>
-        
-        <!-- Nueva ubicación -->
-        <div class="mb-4">
-          <h2 class="text-lg font-bold mb-2">Nueva ubicación propuesta</h2>
-          <div class="grid grid-cols-2 gap-4">
-            <input name="calle_nueva_trasplante" placeholder="Calle" type="text" class="w-full p-2 border rounded">
-            <input name="numero_ext_nueva_trasplante" placeholder="Num. Ext." type="text" class="w-full p-2 border rounded">
-            <input name="alcaldia_nueva_trasplante" placeholder="Alcaldía" type="text" class="w-full p-2 border rounded">
-            <input name="colonia_nueva_trasplante" placeholder="Colonia" type="text" class="w-full p-2 border rounded">
+        <div class="mb-4 space-y-4">
+          <h2 class="text-lg font-bold mb-2">Nueva ubicación propuesta (opcional)</h2>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Calle</label>
+            <input name="calle_nueva_trasplante" placeholder="Ej. Av. Chapultepec" type="text" class="w-full p-2 border rounded">
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Número exterior</label>
+            <input name="numero_ext_nueva_trasplante" placeholder="Ej. 500" type="text" class="w-full p-2 border rounded">
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Alcaldía</label>
+            <select name="alcaldia_nueva_trasplante" class="w-full p-2 border rounded">
+              <option value="" selected>Seleccione alcaldía</option>
+              <option value="alvaro_obregon">Álvaro Obregón</option>
+              <option value="azcapotzalco">Azcapotzalco</option>
+              <option value="benito_juarez">Benito Juárez</option>
+              <option value="coyoacan">Coyoacán</option>
+              <option value="cuajimalpa">Cuajimalpa de Morelos</option>
+              <option value="cuauhtemoc">Cuauhtémoc</option>
+              <option value="gustavo_madero">Gustavo A. Madero</option>
+              <option value="iztapalapa">Iztapalapa</option>
+              <option value="magdalena_contreras">La Magdalena Contreras</option>
+              <option value="miguel_hidalgo">Miguel Hidalgo</option>
+              <option value="milpa_alta">Milpa Alta</option>
+              <option value="tlahuac">Tláhuac</option>
+              <option value="tlalpan">Tlalpan</option>
+              <option value="iztacalco">Iztacalco</option>
+              <option value="xochimilco">Xochimilco</option>
+              <option value="venustiano_carranza">Venustiano Carranza</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Colonia</label>
+            <input name="colonia_nueva_trasplante" placeholder="Ej. Condesa" type="text" class="w-full p-2 border rounded">
           </div>
         </div>
-        
-        <!-- Información adicional -->
         <div class="mb-6">
-          <label class="block text-gray-700 font-medium mb-2">Información adicional</label>
+          <label class="block text-gray-700 font-medium mb-2">Información adicional*</label>
           <textarea name="info_adicional_trasplante" placeholder="Especifique características del árbol y razones para el trasplante..." 
                     class="w-full p-2 border rounded h-24" required></textarea>
         </div>
-        
-        <!-- Botón de envío -->
         <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded font-medium transition duration-300">
           Enviar solicitud de trasplante
         </button>
       </form>
     </div>
   </main>
+  <div id="confirmacionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg max-w-sm mx-auto">
+      <h3 class="text-xl font-bold mb-4">¡Solicitud enviada!</h3>
+      <p class="mb-4">Tu solicitud de trasplante ha sido registrada exitosamente. Recibirás un correo de confirmación.</p>
+      <button onclick="cerrarModal()" class="w-full bg-green-600 text-white p-2 rounded">
+        Aceptar
+      </button>
+    </div>
+  </div>
+  <script>
+    document.getElementById('solicitudForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('confirmacionModal').classList.remove('hidden');
+    });
+
+    function cerrarModal() {
+      document.getElementById('confirmacionModal').classList.add('hidden');
+      window.location.href = "{% url 'arbol:inicio' %}";
+    }
+  </script>
 </body>
 </html>

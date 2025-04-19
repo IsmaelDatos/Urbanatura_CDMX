@@ -5,9 +5,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('apps.arbol.urls')),  # Solo una vez
+    path('', include('apps.arbol.urls')),
     path('usuarios/', include('apps.usuarios.urls')),
-    path('poda/', include('backend.apps.poda.urls')),
+    
+    path('poda/', include('apps.poda.urls', namespace='poda')),
+    path('derribo/', include('apps.derribo.urls', namespace='derribo')),
+    path('trasplante/', include('apps.trasplante.urls', namespace='trasplante')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

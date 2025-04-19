@@ -20,8 +20,10 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'apps.usuarios',
     'apps.arbol',
-    'corsheaders',
-    'backend.apps.poda',
+    'corsheaders', 
+    'apps.poda',
+    'apps.derribo',
+    'apps.trasplante',
 ]
 
 MIDDLEWARE = [

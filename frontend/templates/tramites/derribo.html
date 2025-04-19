@@ -13,67 +13,122 @@
   
   <main class="flex justify-center mt-8 mb-8">
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-      <h1 class="text-2xl font-bold mb-4 text-center">Solicitud de Derribo</h1>
-      <form method="post" enctype="multipart/form-data">
+      <h1 class="text-2xl font-bold mb-6 text-center">Solicitud de Derribo</h1>
+      <form method="post" enctype="multipart/form-data" id="solicitudForm">
         {% csrf_token %}
-        
-        <!-- Motivo de derribo -->
         <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2">Motivo de derribo</label>
+          <label class="block text-gray-700 font-medium mb-2">Motivo de derribo*</label>
           <select name="motivo_derribo" class="w-full p-2 border rounded focus:ring-2 focus:ring-green-500" required>
             <option value="" disabled selected>Seleccione un motivo</option>
-            <option value="riesgo">Riesgo de caída</option>
-            <option value="enfermedad">Enfermedad irreversible</option>
-            <option value="construccion">Para construcción</option>
-            <option value="obstruccion">Obstrucción grave</option>
+            <option value="inclinado_riesgo">Árbol inclinado o en riesgo de desplome</option>
+            <option value="dano_infraestructura">Árbol daña infraestructura pública o privada</option>
+            <option value="arbol_muerto">Árbol muerto (sin hojas, sin crecimiento)</option>
+            <option value="plagas_enfermedades">Árbol con plagas o enfermedades irreversibles</option>
+            <option value="demasiados_arboles">Demasiados árboles juntos, impidiendo su desarrollo</option>
           </select>
         </div>
-        
-        <!-- Subir foto -->
         <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2">Fotografía del árbol</label>
+          <label class="block text-gray-700 font-medium mb-2">Fotografía del árbol*</label>
           <input name="foto_derribo" type="file" accept="image/*" class="w-full p-2 border rounded" required>
           <p class="text-xs text-gray-500 mt-1">Suba una foto clara del árbol a derribar</p>
         </div>
-        
-        <!-- Ubicación -->
         <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2">Ubicación del árbol</label>
+          <label class="block text-gray-700 font-medium mb-2">Ubicación del árbol*</label>
           <select name="ubicacion_derribo" class="w-full p-2 border rounded" required>
             <option value="" disabled selected>Seleccione ubicación</option>
             <option value="banqueta">Banqueta</option>
             <option value="camellon">Camellón</option>
+            <option value="glorieta">Glorieta</option>
+            <option value="parque">Parque</option>
+            <option value="arriate">Arriate</option>
+            <option value="plaza">Plaza</option>
             <option value="propiedad_privada">Propiedad privada</option>
-            <option value="area_publica">Área pública</option>
+            <option value="obra_civil">Obra civil</option>
           </select>
         </div>
-        
-        <!-- Dirección -->
-        <div class="mb-4">
+        <div class="mb-4 space-y-4">
           <h2 class="text-lg font-bold mb-2">Dirección exacta</h2>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Calle*</label>
+            <input name="calle_derribo" placeholder="Ej. Av. Insurgentes" type="text" class="w-full p-2 border rounded" required>
+          </div>
+          
           <div class="grid grid-cols-2 gap-4">
-            <input name="calle_derribo" placeholder="Calle" type="text" class="w-full p-2 border rounded" required>
-            <input name="numero_ext_derribo" placeholder="Num. Ext." type="text" class="w-full p-2 border rounded" required>
-            <input name="numero_int_derribo" placeholder="Num. Int." type="text" class="w-full p-2 border rounded">
-            <input name="alcaldia_derribo" placeholder="Alcaldía" type="text" class="w-full p-2 border rounded" required>
-            <input name="colonia_derribo" placeholder="Colonia" type="text" class="w-full p-2 border rounded" required>
-            <input name="cp_derribo" placeholder="Código postal" type="text" class="w-full p-2 border rounded" required>
+            <div>
+              <label class="block text-gray-700 text-sm font-medium mb-1">Número exterior*</label>
+              <input name="numero_ext_derribo" placeholder="Ej. 456" type="text" class="w-full p-2 border rounded" required maxlength="10" pattern="\d{10}">
+            </div>
+            <div>
+              <label class="block text-gray-700 text-sm font-medium mb-1">Número interior</label>
+              <input name="numero_int_derribo" placeholder="Ej. 12" type="text" class="w-full p-2 border rounded">
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Alcaldía*</label>
+            <select name="alcaldia_derribo" class="w-full p-2 border rounded" required>
+              <option value="" disabled selected>Seleccione alcaldía</option>
+              <option value="alvaro_obregon">Álvaro Obregón</option>
+              <option value="azcapotzalco">Azcapotzalco</option>
+              <option value="benito_juarez">Benito Juárez</option>
+              <option value="coyoacan">Coyoacán</option>
+              <option value="cuajimalpa">Cuajimalpa de Morelos</option>
+              <option value="cuauhtemoc">Cuauhtémoc</option>
+              <option value="gustavo_madero">Gustavo A. Madero</option>
+              <option value="iztapalapa">Iztapalapa</option>
+              <option value="magdalena_contreras">La Magdalena Contreras</option>
+              <option value="miguel_hidalgo">Miguel Hidalgo</option>
+              <option value="milpa_alta">Milpa Alta</option>
+              <option value="tlahuac">Tláhuac</option>
+              <option value="tlalpan">Tlalpan</option>
+              <option value="iztacalco">Iztacalco</option>
+              <option value="xochimilco">Xochimilco</option>
+              <option value="venustiano_carranza">Venustiano Carranza</option>
+            </select>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Colonia*</label>
+            <input name="colonia_derribo" placeholder="Ej. Nápoles" type="text" class="w-full p-2 border rounded" required>
+          </div>
+          
+          <div>
+            <label class="block text-gray-700 text-sm font-medium mb-1">Código Postal*</label>
+            <input name="cp_derribo" placeholder="Ej. 03810" type="text" class="w-full p-2 border rounded" required maxlength="5" pattern="\d{5}">
           </div>
         </div>
-        
-        <!-- Justificación adicional -->
         <div class="mb-6">
-          <label class="block text-gray-700 font-medium mb-2">Justificación detallada</label>
+          <label class="block text-gray-700 font-medium mb-2">Justificación detallada*</label>
           <textarea name="justificacion_derribo" placeholder="Describa en detalle por qué es necesario el derribo..." 
                     class="w-full p-2 border rounded h-24" required></textarea>
         </div>
-        
-        <!-- Botón de envío -->
         <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded font-medium transition duration-300">
           Enviar solicitud de derribo
         </button>
       </form>
     </div>
   </main>
+  <div id="confirmacionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg max-w-sm mx-auto">
+      <h3 class="text-xl font-bold mb-4">¡Solicitud enviada!</h3>
+      <p class="mb-4">Tu solicitud de derribo ha sido registrada exitosamente. Recibirás un correo de confirmación.</p>
+      <button onclick="cerrarModal()" class="w-full bg-green-600 text-white p-2 rounded">
+        Aceptar
+      </button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('solicitudForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('confirmacionModal').classList.remove('hidden');
+    });
+
+    function cerrarModal() {
+      document.getElementById('confirmacionModal').classList.add('hidden');
+      window.location.href = "{% url 'arbol:inicio' %}";
+    }
+  </script>
 </body>
 </html>
