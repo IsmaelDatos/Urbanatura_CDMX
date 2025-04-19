@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'apps.usuarios',
     'apps.arbol',
     'corsheaders',
+    'backend.apps.poda',
 ]
 
 MIDDLEWARE = [

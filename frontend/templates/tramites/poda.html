@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
+  <title>Solicitud de Poda - Urbanatura CDMX</title>
+</head>
+<body class="bg-lime-300 font-roboto">
+  <div class="navbar-container">
+    {% include 'navbar.html' %}
+  </div>
+  
+  <main class="flex justify-center mt-8 mb-8">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+      <h1 class="text-2xl font-bold mb-4 text-center">Solicitud de Poda</h1>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Motivo de poda -->
+        <div class="mb-4">
+          <label class="block text-gray-700 font-medium mb-2">Motivo de poda</label>
+          <select name="motivo_poda" class="w-full p-2 border rounded focus:ring-2 focus:ring-green-500" required>
+            <option value="" disabled selected>Seleccione un motivo</option>
+            <option value="mantenimiento">Mantenimiento preventivo</option>
+            <option value="seguridad">Seguridad (ramas peligrosas)</option>
+            <option value="salud">Salud del árbol</option>
+            <option value="interferencia">Interferencia con infraestructura</option>
+          </select>
+        </div>
+        
+        <!-- Subir foto -->
+        <div class="mb-4">
+          <label class="block text-gray-700 font-medium mb-2">Fotografía del árbol</label>
+          <input name="foto_poda" type="file" accept="image/*" class="w-full p-2 border rounded" required>
+          <p class="text-xs text-gray-500 mt-1">Suba una foto clara del árbol que requiere poda</p>
+        </div>
+        
+        <!-- Ubicación -->
+        <div class="mb-4">
+          <label class="block text-gray-700 font-medium mb-2">Ubicación del árbol</label>
+          <select name="ubicacion_poda" class="w-full p-2 border rounded" required>
+            <option value="" disabled selected>Seleccione ubicación</option>
+            <option value="banqueta">Banqueta</option>
+            <option value="camellon">Camellón</option>
+            <option value="glorieta">Glorieta</option>
+            <option value="parque">Parque</option>
+          </select>
+        </div>
+        
+        <!-- Dirección -->
+        <div class="mb-4">
+          <h2 class="text-lg font-bold mb-2">Dirección exacta</h2>
+          <div class="grid grid-cols-2 gap-4">
+            <input name="calle_poda" placeholder="Calle" type="text" class="w-full p-2 border rounded" required>
+            <input name="numero_ext_poda" placeholder="Num. Ext." type="text" class="w-full p-2 border rounded" required>
+            <input name="numero_int_poda" placeholder="Num. Int." type="text" class="w-full p-2 border rounded">
+            <input name="alcaldia_poda" placeholder="Alcaldía" type="text" class="w-full p-2 border rounded" required>
+            <input name="colonia_poda" placeholder="Colonia" type="text" class="w-full p-2 border rounded" required>
+            <input name="cp_poda" placeholder="Código postal" type="text" class="w-full p-2 border rounded" required>
+          </div>
+        </div>
+        
+        <!-- Referencias -->
+        <div class="mb-6">
+          <label class="block text-gray-700 font-medium mb-2">Referencias adicionales</label>
+          <textarea name="referencias_poda" placeholder="Ej. Frente a la tienda de abarrotes, árbol grande con flores amarillas..." 
+                    class="w-full p-2 border rounded h-24"></textarea>
+        </div>
+        
+        <!-- Botón de envío -->
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded font-medium transition duration-300">
+          Enviar solicitud de poda
+        </button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

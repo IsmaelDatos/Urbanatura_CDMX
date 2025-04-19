@@ -1,6 +1,9 @@
 from django.urls import path
-from . import views
+from .views import CrearSolicitudPodaView, ListaSolicitudesPodaView
+
+app_name = 'poda'
 
 urlpatterns = [
-    path('solicitar-poda/', views.solicitar_poda, name='solicitar_poda'),
+    path('solicitar/', CrearSolicitudPodaView.as_view(), name='solicitar'),
+    path('mis-solicitudes/', ListaSolicitudesPodaView.as_view(), name='lista'),
 ]
