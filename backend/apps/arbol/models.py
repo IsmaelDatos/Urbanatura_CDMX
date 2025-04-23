@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 
 class Arbol(models.Model):
-    # Opciones para choices
     ESTRUCTURAS = [
         ('copa mal equilibrada', 'Copa mal equilibrada'),
         ('ramas muy largas', 'Ramas muy largas'),
@@ -30,7 +29,6 @@ class Arbol(models.Model):
         ('Otro', 'Otro'),
     ]
 
-    # Localización
     entidad_federativa = models.CharField(max_length=100, default="Ciudad de México")
     codigo_postal = models.CharField(max_length=5)
     municipio_alcaldia = models.CharField(max_length=100)
@@ -43,7 +41,6 @@ class Arbol(models.Model):
     ubicacion = models.CharField(max_length=50, choices=UBICACION_CHOICES,blank=True,)
     ubicacion_otro = models.CharField(max_length=100, blank=True, null=True)
     
-    # Características del árbol
     nombre_comun = models.CharField(max_length=100)
     nombre_cientifico = models.CharField(max_length=100)
     numero_arbol = models.CharField(max_length=50, blank=True, null=True)
@@ -54,7 +51,6 @@ class Arbol(models.Model):
     estructura_general = models.CharField(max_length=50, choices=ESTRUCTURAS)
     condicion_general = models.CharField(max_length=50, choices=CONDICIONES)
     
-    # Metadata y fotos
     fecha_registro = models.DateField(default=timezone.now)
     foto1 = models.ImageField(upload_to='arboles/')
     foto2 = models.ImageField(upload_to='arboles/', blank=True, null=True)

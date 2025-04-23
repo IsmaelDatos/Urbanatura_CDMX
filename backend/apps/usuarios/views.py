@@ -7,7 +7,6 @@ from django.http import HttpResponseNotAllowed
 
 def register_ciudadano(request):
     if request.method == 'GET':
-        # Renderizar el formulario de registro para peticiones GET
         return render(request, 'registration/register.html', {
             'form': CiudadanoRegistrationForm()
         })
@@ -23,7 +22,6 @@ def register_ciudadano(request):
                     'redirect_url': '/'
                 })
             
-            # Mejor manejo de errores
             errors = {}
             for field, error_list in form.errors.items():
                 errors[field] = error_list[0] if error_list else 'Error desconocido'
@@ -39,7 +37,6 @@ def register_ciudadano(request):
                 'error': str(e)
             }, status=500)
     
-    # Manejo de otros métodos HTTP (PUT, DELETE, etc.)
     return HttpResponseNotAllowed(['GET', 'POST'])
 
 def register_institucion(request):

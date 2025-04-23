@@ -1,9 +1,8 @@
-{% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
+{% include 'navbar.html' %}
+
 <style>
-    /* Estilos para las tarjetas y botones */
     .cards-container {
         display: flex;
         flex-wrap: wrap;
@@ -85,7 +84,6 @@
 </style>
 
 <div class="main-container">
-    <!-- Botón de agregar a la izquierda -->
     <div>
         <a href="{% url 'arbol:agregar_arbol' %}">
             <button class="add-button">➕ Agregar Árbol</button>

@@ -13,7 +13,6 @@ def inicio(request):
 def agregar_arbol(request):
     if request.method == 'POST':
         try:
-            # Forzar valores del frontend
             post_data = request.POST.copy()
             post_data['entidad_federativa'] = 'CDMX'
             
@@ -44,7 +43,6 @@ def agregar_arbol(request):
                 'error': str(e)
             }, status=500)
 
-    # GET request
     form = ArbolForm(initial={
         'entidad_federativa': 'CDMX',
     })
@@ -73,7 +71,7 @@ def eliminar_arbol(request, id):
     arbol = get_object_or_404(Arbol, id=id)
     if request.method == 'POST':
         arbol.delete()
-        return redirect('arbol:lista_arboles')  # Añadido namespace
+        return redirect('arbol:lista_arboles') 
     return render(request, 'arboles/eliminar_arbol.html', {'arbol': arbol})
 
 def documentacion(request):
@@ -82,8 +80,6 @@ def documentacion(request):
 def informacion_empresa(request):
     return render(request, 'arboles/informacion_empresa.html')
     if request.method == 'POST':
-        # Procesar formulario aquí
         return redirect('nombre_de_la_url_exitosa')
     return render(request, 'arboles/tu_template.html')
-    # Tu lógica para guardar la solicitud aquí
     return render(request, 'arboles/solicitud_exitosa.html')

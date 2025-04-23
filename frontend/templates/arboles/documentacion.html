@@ -1,34 +1,11 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentación - Urbanatura CDMX</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <style>
-        /* Estilos básicos para el índice y el contenido */
-        .container {
-            display: flex;
-        }
-        .indice {
-            width: 200px;
-            margin-right: 20px;
-        }
-        .contenido {
-            flex-grow: 1;
-        }
-    </style>
+    {% include 'navbar.html' %}
 </head>
 <body>
-    <header>
-        <h1>Documentación</h1>
-        <nav>
-            <a href="{% url 'arbol:inicio' %}">Inicio</a>
-            <a href="{% url 'arbol:lista_arboles' %}">Lista de Árboles</a>
-            <a href="{% url 'arbol:agregar_arbol' %}">Agregar Árbol</a>
-        </nav>
-    </header>
     <div class="container">
         <div class="indice">
             <h2>Índice</h2>

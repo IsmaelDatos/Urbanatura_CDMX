@@ -1,4 +1,5 @@
 {% load static %}
+{% include 'navbar.html' %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,6 +9,13 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <style>
+        /* Añade esto para el espacio de la navbar fija */
+        body {
+            padding-top: 120px; /* Ajusta este valor según la altura de tu navbar */
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+        }
+        
         .logo {
             width: 60px;
             margin-right: 20px;
@@ -17,10 +25,6 @@
             display: flex;
             align-items: center;
             margin-bottom: 20px;
-        }
-        body {
-            font-family: 'Roboto', sans-serif;
-            text-align: center;
         }
         h2, h3 {
             font-family: 'Poppins', sans-serif;
@@ -44,21 +48,24 @@
             vertical-align: middle;
             margin-right: 10px;
         }
+        
+        /* Media query para dispositivos móviles */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 100px; /* Puedes necesitar más espacio en móviles */
+            }
+            .tarjetas {
+                flex-direction: column;
+                align-items: center;
+            }
+            .tarjeta {
+                margin: 10px 0;
+                width: 80%;
+            }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <img src="{% static 'images/logo.png' %}" alt="Logo de LEEI Solutions" class="logo">
-            <h1>LEEI Solutions</h1>
-        </div>
-        <nav>
-            <a href="{% url 'arbol:inicio' %}">Inicio</a>
-            <a href="{% url 'arbol:lista_arboles' %}">Lista de Árboles</a>
-            <a href="{% url 'arbol:agregar_arbol' %}">Agregar Árbol</a>
-            <a href="{% url 'arbol:documentacion' %}">Documentación</a>
-        </nav>
-    </header>
     <main>
         <h3>Misión</h3>
         <p>Impulsar y transformar negocios e instituciones con soluciones tecnológicas que encienden la inspiración.</p>

@@ -6,7 +6,7 @@ class ArbolForm(forms.ModelForm):
     def validate_image_size(value):
         if value:
             filesize = value.size
-            if filesize > 5 * 1024 * 1024:  # 5MB
+            if filesize > 5 * 1024 * 1024: 
                 raise ValidationError("El tamaño máximo de la imagen es 5MB")
 
     foto1 = forms.ImageField(validators=[validate_image_size], required=True)
@@ -31,9 +31,6 @@ class ArbolForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Elimina esta línea que causa el error
-        # self.fields['foto'].required = False
-        
         self.fields['entidad_federativa'].initial = "CDMX"
         self.fields['nombre_cientifico'].initial = ""
         self.fields['nombre_cientifico'].widget.attrs['readonly'] = True
@@ -44,6 +41,6 @@ class ArbolForm(forms.ModelForm):
         
         if commit:
             instance.save()
-            self.save_m2m()  # Importante para guardar relaciones ManyToMany si las hay
+            self.save_m2m()
         return instance
     

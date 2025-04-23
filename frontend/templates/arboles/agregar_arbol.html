@@ -1,7 +1,6 @@
-{% extends "base.html" %}
 {% load static %}
 {% block content %}
-
+{% include 'navbar.html' %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,8 +8,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
 </head>
-<body class="bg-white font-roboto"> 
-  <!-- Modal de confirmación -->
+<body class="bg-white font-roboto">
   <div id="successModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
       <div class="text-center">
@@ -31,14 +29,11 @@
       </div>
     </div>
   </div>
-
   <main class="p-8">
     <h1 class="text-3xl font-bold mb-6">Agregar árbol</h1>
     <section class="bg-lime-200 p-6 rounded-lg shadow-md">
       <form id="arbolForm" method="POST" action="{% url 'arbol:agregar_arbol' %}" enctype="multipart/form-data">
         {% csrf_token %}
-        
-        <!-- Campo oculto para fecha de registro -->
         <input type="hidden" name="fecha_registro" id="fecha_registro">
         
         <h2 class="text-2xl font-bold mb-4 pb-2 border-b border-gray-300">Localización</h2>
@@ -51,7 +46,7 @@
           
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Código postal</label>
-            <input name="codigo_postal" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Ingresa el código postal de 5 dígitos" type="number" maxlength="5" required/>
+            <input name="codigo_postal" class="w-full p-2 rounded-lg border border-gray-300" placeholder="Ingresa el código postal de 5 dígitos" type="number" required maxlength="5" pattern="\d{5}">
           </div>
           
           <div>
@@ -282,8 +277,6 @@
             </label>
           </div>
         </div>
-
-        <!-- Botón de enviar -->
         <div class="mt-8 w-full">
           <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
             Registrar Árbol
@@ -294,7 +287,6 @@
   </main>
 
   <script>
-    // Mapeo completo de nombres científicos
     const nombresCientificos = {
       "Álamo": "Populus alba",
       "Ahuehuete": "Taxodium mucronatum",
@@ -342,8 +334,6 @@
       "Zapote Negro": "Diospyros digyna",
       "Otro": "Desconocido"
     };
-
-    // Función para actualizar el nombre científico
     function actualizarNombreCientifico() {
       const selectArbol = document.getElementById('nombre_comun');
       const inputCientifico = document.getElementById('nombre_cientifico_input');
@@ -355,15 +345,10 @@
         inputCientifico.value = "";
       }
     }
-
-    // Configuración inicial cuando se carga la página
     document.addEventListener('DOMContentLoaded', function() {
-      // Establecer fecha actual en el campo oculto
       const now = new Date();
       const fechaActual = now.toISOString().split('T')[0];
       document.getElementById('fecha_registro').value = fechaActual;
-      
-      // Configurar el campo "Otro" de ubicación
       const ubicacionSelect = document.getElementById('ubicacionSelect');
       const ubicacionOtroContainer = document.getElementById('ubicacionOtroContainer');
       
@@ -377,8 +362,6 @@
           document.getElementById('ubicacionOtroInput').value = '';
         }
       });
-
-      // Configurar preview de imágenes
       for (let i = 1; i <= 5; i++) {
         const input = document.getElementById(`foto${i}`);
         const preview = document.getElementById(`preview${i}`);
@@ -396,14 +379,8 @@
           });
         }
       }
-      
-      // Asignar el evento change al select
       document.getElementById('nombre_comun').addEventListener('change', actualizarNombreCientifico);
-      
-      // Actualizar inmediatamente si hay un valor seleccionado
       actualizarNombreCientifico();
-      
-      // Validación de inclinación del tronco
       document.getElementById('inclinacion_tronco').addEventListener('input', function(event) {
         let input = event.target.value;
         let regex = /^(\d{0,3})°\s*(\d{0,2})'\s*(\d{0,2})"&/;
@@ -414,8 +391,6 @@
         }
         event.target.value = input;
       });
-
-      // Validación de altura máxima
       document.getElementById('arbolForm').addEventListener('submit', function(event) {
         const alturaInput = document.getElementById('altura');
         const alturaValue = alturaInput.value;
@@ -425,8 +400,6 @@
           event.preventDefault();
         }
       });
-
-      // Configurar el modal de éxito
       const urlParams = new URLSearchParams(window.location.search);
       const success = urlParams.get('success');
       
@@ -438,8 +411,6 @@
         window.location.href = "{% url 'arbol:inicio' %}";
       });
     });
-
-    // Manejo del envío del formulario
     document.getElementById('arbolForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -474,419 +445,3 @@
 </body>
 </html>
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-{% comment %} {% extends "base.html" %}
-{% load static %}
-{% block content %}
-
-<!DOCTYPE html>
-<html>
-<head>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"/>
-</head>
-<body class="bg-white font-roboto"> 
-  <!-- Modal de confirmación -->
-  <div id="successModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
-      <div class="text-center">
-        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-          <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-          </svg>
-        </div>
-        <h3 class="text-lg leading-6 font-medium text-gray-900 mt-3">¡Éxito!</h3>
-        <div class="mt-2">
-          <p class="text-sm text-gray-500">Gracias por registrar el árbol. La información ha sido guardada en la base de datos.</p>
-        </div>
-        <div class="mt-4">
-          <button id="modalOkButton" type="button" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:text-sm">
-            OK
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <main class="p-8">
-    <h1 class="text-3xl font-bold mb-4">Agregar árbol</h1>
-    <section class="bg-lime-200 p-6 rounded-lg shadow-md">
-      <form id="arbolForm" method="POST" action="{% url 'arbol:agregar_arbol' %}" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <!-- Campo oculto para fecha de registro -->
-        <input type="hidden" name="fecha_registro" id="fecha_registro">
-        
-        <h2 class="text-2xl font-bold mb-4">Localización</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <input name="entidad_federativa" class="p-2 rounded-lg border border-gray-300" value="CDMX" readonly required/>
-          <input name="codigo_postal" class="p-2 rounded-lg border border-gray-300" placeholder="Código postal" type="number" maxlength="5" required/>
-          <select name="alcaldia" class="p-2 rounded-lg border border-gray-300" required>
-              <option value="">Selecciona una alcaldía</option>
-              <option value="Álvaro Obregón">Álvaro Obregón</option>
-              <option value="Azcapotzalco">Azcapotzalco</option>
-              <option value="Benito Juárez">Benito Juárez</option>
-              <option value="Coyoacán">Coyoacán</option>
-              <option value="Cuajimalpa de Morelos">Cuajimalpa de Morelos</option>
-              <option value="Gustavo A. Madero">Gustavo A. Madero</option>
-              <option value="Iztacalco">Iztacalco</option>
-              <option value="Iztapalapa">Iztapalapa</option>
-              <option value="La Magdalena Contreras">La Magdalena Contreras</option>
-              <option value="Milpa Alta">Milpa Alta</option>
-              <option value="Miguel Hidalgo">Miguel Hidalgo</option>
-              <option value="Tláhuac">Tláhuac</option>
-              <option value="Tlalpan">Tlalpan</option>
-              <option value="Venustiano Carranza">Venustiano Carranza</option>
-              <option value="Xochimilco">Xochimilco</option>            
-          </select>
-          <input name="colonia" class="p-2 rounded-lg border border-gray-300" placeholder="Colonia" type="text" required/>
-          <input name="calle" class="p-2 rounded-lg border border-gray-300" placeholder="Calle" type="text" required/>
-          <input name="num_ext" class="p-2 rounded-lg border border-gray-300" placeholder="Número exterior" type="text"/>
-          <input name="entre_calle" class="p-2 rounded-lg border border-gray-300" placeholder="Entre calle:" type="text"/>
-          <input name="y_calle" class="p-2 rounded-lg border border-gray-300" placeholder="Y calle:" type="text"/>
-          
-          <!-- Nuevo campo de ubicación -->
-          <select name="ubicacion" class="p-2 rounded-lg border border-gray-300" id="ubicacionSelect" required>
-            <option value="">Selecciona la ubicación</option>
-            <option value="Banqueta">Banqueta</option>
-            <option value="Camellón">Camellón</option>
-            <option value="Glorieta">Glorieta</option>
-            <option value="Parque">Parque</option>
-            <option value="Arriate">Arriate</option>
-            <option value="Plaza">Plaza</option>
-            <option value="Propiedad privada">Propiedad privada</option>
-            <option value="Obra civil">Obra civil</option>
-            <option value="Otro">Otro (especificar)</option>
-          </select>
-          
-          <!-- Campo para especificar cuando se selecciona "Otro" -->
-          <input name="ubicacion_otro" id="ubicacionOtroInput" class="p-2 rounded-lg border border-gray-300 hidden" placeholder="Especificar ubicación" type="text"/>
-        </div>
-
-        <h2 class="text-2xl font-bold mb-4">Características</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <select name="nombre_comun" id="nombre_comun" class="p-2 rounded-lg border border-gray-300" required>
-            <option value="">Selecciona un árbol</option>
-            <option value="Álamo">Álamo</option>
-            <option value="Ahuehuete">Ahuehuete</option>
-            <option value="Ahuejote">Ahuejote</option>
-            <option value="Aile">Aile</option>
-            <option value="Árbol de Fuego">Árbol de Fuego</option>
-            <option value="Árbol de Judas">Árbol de Judas</option>
-            <option value="Árbol Lluvia de Oro">Árbol Lluvia de Oro</option>
-            <option value="Árbol de la Llama">Árbol de la Llama</option>
-            <option value="Árbol del Paraíso">Árbol del Paraíso</option>
-            <option value="Avellano">Avellano</option>
-            <option value="Bugambilia">Bugambilia</option>
-            <option value="Cacalosúchil">Cacalosúchil</option>
-            <option value="Caoba">Caoba</option>
-            <option value="Capulín">Capulín</option>
-            <option value="Casuarina">Casuarina</option>
-            <option value="Cedro Blanco">Cedro Blanco</option>
-            <option value="Cedro Rojo">Cedro Rojo</option>
-            <option value="Ceiba">Ceiba</option>
-            <option value="Ciprés">Ciprés</option>
-            <option value="Encino">Encino</option>
-            <option value="Eucalipto">Eucalipto</option>
-            <option value="Fresno">Fresno</option>
-            <option value="Guayabo">Guayabo</option>
-            <option value="Jacaranda">Jacaranda</option>
-            <option value="Laurel de la India">Laurel de la India</option>
-            <option value="Liquidámbar">Liquidámbar</option>
-            <option value="Magnolia">Magnolia</option>
-            <option value="Mezquite">Mezquite</option>
-            <option value="Naranjo">Naranjo</option>
-            <option value="Níspero">Níspero</option>
-            <option value="Olmo">Olmo</option>
-            <option value="Pino">Pino</option>
-            <option value="Pirul">Pirul</option>
-            <option value="Roble">Roble</option>
-            <option value="Sauce Llorón">Sauce Llorón</option>
-            <option value="Tabachín">Tabachín</option>
-            <option value="Tecoma">Tecoma</option>
-            <option value="Tejocote">Tejocote</option>
-            <option value="Tzalam">Tzalam</option>
-            <option value="Tulipán Africano">Tulipán Africano</option>
-            <option value="Tule">Tule</option>
-            <option value="Yuca">Yuca</option>
-            <option value="Zapote Blanco">Zapote Blanco</option>
-            <option value="Zapote Negro">Zapote Negro</option>
-            <option value="Otro">Otro</option>
-          </select>
-          
-          <input name="nombre_cientifico" id="nombre_cientifico_input" class="p-2 rounded-lg border border-gray-300 bg-gray-100" placeholder="Nombre científico" type="text" readonly required/>
-          <input name="numero_arbol" class="p-2 rounded-lg border border-gray-300" placeholder="Número de árbol (si aplica)" type="number" min="1"/>
-          <input id="altura" name="altura" class="p-2 rounded-lg border border-gray-300" placeholder="Altura del árbol (m)" type="number" min="0" max="50" required/>
-          <input name="diametro_tronco" class="p-2 rounded-lg border border-gray-300" placeholder="Diámetro de tronco (cm)" type="number" min="0" max="300" required/>
-          <input name="diametro_copa" class="p-2 rounded-lg border border-gray-300" placeholder="Diámetro de copa (m)" type="number" min="0" max="50" required/>
-          <input id="inclinacion_tronco" name="inclinacion_tronco" class="p-2 rounded-lg border border-gray-300" placeholder="0° 00' 00&quot;" type="text" required />
-          <select name="estructura_general" class="p-2 rounded-lg border border-gray-300" required>
-              <option value="">Selecciona la estructura general</option>
-              <option value="copa mal equilibrada">Copa mal equilibrada</option>
-              <option value="ramas muy largas">Ramas muy largas</option>
-              <option value="troncos múltiples">Troncos múltiples</option>
-              <option value="troncos codominantes">Troncos codominantes</option>
-              <option value="ramas codominantes">Ramas codominantes</option>
-          </select>
-          <select name="condicion_general" class="p-2 rounded-lg border border-gray-300" required>
-              <option value="">Selecciona la condición general</option>
-              <option value="irrecuperable">Irrecuperable</option>
-              <option value="susceptible de mejora">Susceptible de mejora</option>
-              <option value="buena">Buena</option>
-              <option value="muy buena">Muy buena</option>
-          </select>
-        </div>
-
-        <!-- Sección para subir fotos -->
-        <h2 class="text-2xl font-bold mt-6 mb-4">Fotografías del árbol</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-          <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center">
-            <label for="foto1" class="cursor-pointer text-center">
-              <i class="fas fa-camera text-4xl text-gray-400 mb-2"></i>
-              <p class="text-sm text-gray-600">Foto 1 (requerida)</p>
-              <input type="file" name="foto1" id="foto1" class="hidden" accept="image/*" required>
-              <img id="preview1" class="mt-2 w-full h-32 object-cover hidden rounded-lg"/>
-            </label>
-          </div>
-          
-          <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center">
-            <label for="foto2" class="cursor-pointer text-center">
-              <i class="fas fa-camera text-4xl text-gray-400 mb-2"></i>
-              <p class="text-sm text-gray-600">Foto 2</p>
-              <input type="file" name="foto2" id="foto2" class="hidden" accept="image/*">
-              <img id="preview2" class="mt-2 w-full h-32 object-cover hidden rounded-lg"/>
-            </label>
-          </div>
-          
-          <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center">
-            <label for="foto3" class="cursor-pointer text-center">
-              <i class="fas fa-camera text-4xl text-gray-400 mb-2"></i>
-              <p class="text-sm text-gray-600">Foto 3</p>
-              <input type="file" name="foto3" id="foto3" class="hidden" accept="image/*">
-              <img id="preview3" class="mt-2 w-full h-32 object-cover hidden rounded-lg"/>
-            </label>
-          </div>
-          
-          <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center">
-            <label for="foto4" class="cursor-pointer text-center">
-              <i class="fas fa-camera text-4xl text-gray-400 mb-2"></i>
-              <p class="text-sm text-gray-600">Foto 4</p>
-              <input type="file" name="foto4" id="foto4" class="hidden" accept="image/*">
-              <img id="preview4" class="mt-2 w-full h-32 object-cover hidden rounded-lg"/>
-            </label>
-          </div>
-          
-          <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center">
-            <label for="foto5" class="cursor-pointer text-center">
-              <i class="fas fa-camera text-4xl text-gray-400 mb-2"></i>
-              <p class="text-sm text-gray-600">Foto 5</p>
-              <input type="file" name="foto5" id="foto5" class="hidden" accept="image/*">
-              <img id="preview5" class="mt-2 w-full h-32 object-cover hidden rounded-lg"/>
-            </label>
-          </div>
-        </div>
-
-        <!-- Botón de enviar -->
-        <div class="mt-8 w-full">
-          <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
-            Agregar Árbol
-          </button>
-        </div>
-      </form>
-    </section>
-  </main>
-
-  <script>
-    // Mapeo completo de nombres científicos
-    const nombresCientificos = {
-      "Álamo": "Populus alba",
-      "Ahuehuete": "Taxodium mucronatum",
-      "Ahuejote": "Salix bonplandiana",
-      "Aile": "Alnus acuminata",
-      "Árbol de Fuego": "Delonix regia",
-      "Árbol de Judas": "Cercis siliquastrum",
-      "Árbol Lluvia de Oro": "Cassia fistula",
-      "Árbol de la Llama": "Brachychiton acerifolius",
-      "Árbol del Paraíso": "Melia azedarach",
-      "Avellano": "Corylus avellana",
-      "Bugambilia": "Bougainvillea glabra",
-      "Cacalosúchil": "Plumeria rubra",
-      "Caoba": "Swietenia macrophylla",
-      "Capulín": "Prunus salicifolia",
-      "Casuarina": "Casuarina equisetifolia",
-      "Cedro Blanco": "Cupressus lusitanica",
-      "Cedro Rojo": "Cedrela odorata",
-      "Ceiba": "Ceiba pentandra",
-      "Ciprés": "Cupressus sempervirens",
-      "Encino": "Quercus robur",
-      "Eucalipto": "Eucalyptus globulus",
-      "Fresno": "Fraxinus uhdei",
-      "Guayabo": "Psidium guajava",
-      "Jacaranda": "Jacaranda mimosifolia",
-      "Laurel de la India": "Ficus benjamina",
-      "Liquidámbar": "Liquidambar styraciflua",
-      "Magnolia": "Magnolia grandiflora",
-      "Mezquite": "Prosopis laevigata",
-      "Naranjo": "Citrus sinensis",
-      "Níspero": "Eriobotrya japonica",
-      "Olmo": "Ulmus pumila",
-      "Pino": "Pinus cembroides",
-      "Pirul": "Schinus molle",
-      "Roble": "Quercus rugosa",
-      "Sauce Llorón": "Salix babylonica",
-      "Tabachín": "Caesalpinia pulcherrima",
-      "Tecoma": "Tecoma stans",
-      "Tejocote": "Crataegus mexicana",
-      "Tzalam": "Lysiloma latisiliquum",
-      "Tulipán Africano": "Spathodea campanulata",
-      "Tule": "Taxodium distichum",
-      "Yuca": "Yucca elephantipes",
-      "Zapote Blanco": "Casimiroa edulis",
-      "Zapote Negro": "Diospyros digyna",
-      "Otro": "Desconocido"
-    };
-
-    // Función para actualizar el nombre científico
-    function actualizarNombreCientifico() {
-      const selectArbol = document.getElementById('nombre_comun');
-      const inputCientifico = document.getElementById('nombre_cientifico_input');
-      const arbolSeleccionado = selectArbol.value;
-      
-      if (arbolSeleccionado && nombresCientificos[arbolSeleccionado]) {
-        inputCientifico.value = nombresCientificos[arbolSeleccionado];
-      } else {
-        inputCientifico.value = "";
-      }
-    }
-
-    // Configuración inicial cuando se carga la página
-    document.addEventListener('DOMContentLoaded', function() {
-      // Establecer fecha actual en el campo oculto
-      const now = new Date();
-      const fechaActual = now.toISOString().split('T')[0];
-      document.getElementById('fecha_registro').value = fechaActual;
-      
-      // Configurar el campo "Otro" de ubicación
-      const ubicacionSelect = document.getElementById('ubicacionSelect');
-      const ubicacionOtroInput = document.getElementById('ubicacionOtroInput');
-      
-      ubicacionSelect.addEventListener('change', function() {
-        if (this.value === 'Otro') {
-          ubicacionOtroInput.classList.remove('hidden');
-          ubicacionOtroInput.required = true;
-        } else {
-          ubicacionOtroInput.classList.add('hidden');
-          ubicacionOtroInput.required = false;
-          ubicacionOtroInput.value = '';
-        }
-      });
-
-      // Configurar preview de imágenes
-      for (let i = 1; i <= 5; i++) {
-        const input = document.getElementById(`foto${i}`);
-        const preview = document.getElementById(`preview${i}`);
-        
-        if (input) {
-          input.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-              const reader = new FileReader();
-              reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.classList.remove('hidden');
-              }
-              reader.readAsDataURL(this.files[0]);
-            }
-          });
-        }
-      }
-      
-      // Asignar el evento change al select
-      document.getElementById('nombre_comun').addEventListener('change', actualizarNombreCientifico);
-      
-      // Actualizar inmediatamente si hay un valor seleccionado
-      actualizarNombreCientifico();
-      
-      // Validación de inclinación del tronco
-      document.getElementById('inclinacion_tronco').addEventListener('input', function(event) {
-        let input = event.target.value;
-        let regex = /^(\d{0,3})°\s*(\d{0,2})'\s*(\d{0,2})"&/;
-        if (regex.test(input)) {
-          input = input.replace(regex, '$1° $2\' $3"&');
-        } else {
-          input = input.replace(/[^0-9°'\s"]/g, '');
-        }
-        event.target.value = input;
-      });
-
-      // Validación de altura máxima
-      document.getElementById('arbolForm').addEventListener('submit', function(event) {
-        const alturaInput = document.getElementById('altura');
-        const alturaValue = alturaInput.value;
-    
-        if (alturaValue > 50) {
-          alert("La altura no puede ser mayor a 50 metros.");
-          event.preventDefault();
-        }
-      });
-
-      // Configurar el modal de éxito
-      const urlParams = new URLSearchParams(window.location.search);
-      const success = urlParams.get('success');
-      
-      if (success === 'true') {
-        document.getElementById('successModal').classList.remove('hidden');
-      }
-
-      document.getElementById('modalOkButton').addEventListener('click', function() {
-        window.location.href = "{% url 'arbol:inicio' %}";
-      });
-    });
-
-    // Manejo del envío del formulario
-    document.getElementById('arbolForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const form = this;
-      const formData = new FormData(form);
-      
-      fetch(form.action, {
-          method: 'POST',
-          body: formData,
-          headers: {
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-          }
-      })
-      .then(response => response.json())
-      .then(data => {
-          if (data.success) {
-              document.getElementById('successModal').classList.remove('hidden');
-              setTimeout(() => {
-                  window.location.href = data.redirect_url;
-              }, 2000);
-          } else {
-              alert('Error: ' + (data.error || 'Datos inválidos'));
-          }
-      })
-      .catch(error => {
-          console.error('Error:', error);
-          alert('Error al conectar con el servidor');
-      });
-    });
-  </script>
-</body>
-</html>
-{% endblock %} {% endcomment %}
