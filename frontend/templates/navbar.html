@@ -9,11 +9,7 @@
             
             <div class="nav-right">
                 <li class="nav-enlace secciones">
-                    <a href="{% url 'arbol:inicio' %}">Inicio<span class="arrow">▼</span></a>
-                    <ul class="desplegable">
-                        <li><a href="#"><i class="fas fa-map-marked-alt" style="margin-right: 8px;"></i>Mapa</a></li>
-                        <li><a href="{% url 'arbol:lista_arboles' %}"><i class="fas fa-clipboard-list" style="margin-right: 8px;"></i>Inventario</a></li>
-                    </ul>
+                    <a href="{% url 'arbol:inicio' %}">Inicio</a>
                 </li>
                 <li class="nav-enlace secciones">
                     <a href="#">Trámites<span class="arrow">▼</span></a>
@@ -231,7 +227,6 @@
         transform: rotate(180deg);
     }
     
-    /* Responsive design */
     @media (max-width: 1200px) {
         .navbar {
             padding: 0.8rem 1.8rem;

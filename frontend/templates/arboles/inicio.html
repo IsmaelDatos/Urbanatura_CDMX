@@ -1,5 +1,4 @@
 {% load static %}
-{% include 'navbar.html' %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,7 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --color-primario: #176b00;
+            --color-primario: #176b00;  /* Color verde especificado */
             --color-hover: #339f00;
             --color-texto: #ffffff;
             --color-icono-hover: #d8d8d8;
@@ -75,7 +74,7 @@
         .btn {
             display: inline-block;
             padding: 12px 25px;
-            background-color: #176b00; /* Cambiado a verde oscuro */
+            background-color: var(--color-primario); /* Usando el color definido */
             color: white;
             text-decoration: none;
             border-radius: 5px;
@@ -88,7 +87,7 @@
         }
         
         .btn:hover {
-            background-color: #339f00; /* Color hover más claro */
+            background-color: var(--color-hover);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
@@ -110,6 +109,8 @@
     </style>
 </head>
 <body>
+    {% include 'navbar.html' %}
+    
     <main>
         <div class="objetivo">
             <h2>Objetivo</h2>
@@ -121,8 +122,6 @@
         </div>
         <div class="botones">
             <a href="{% url 'arbol:agregar_arbol' %}" class="btn">Agregar Árbol</a>
-            <a href="{% url 'arbol:lista_arboles' %}" class="btn">Eliminar Árbol</a>
-            <a href="{% url 'arbol:lista_arboles' %}" class="btn">Modificar Árbol</a> 
             <a href="{% url 'arbol:lista_arboles' %}" class="btn">Ver Lista Completa</a>
         </div>
     </main>
