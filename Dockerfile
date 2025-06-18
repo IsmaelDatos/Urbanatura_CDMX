@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=builder /install /usr/local
 
 WORKDIR /app
-COPY backend .  # Copia todo el contenido de backend a /app
+COPY ./backend .
 
 ENV PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=urbanatura_cdmx.settings \
