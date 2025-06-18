@@ -38,7 +38,7 @@ RUN mkdir -p /app/static && \
     mkdir -p /app/media
 
 # Ejecuta collectstatic
-RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput --clear
 
 EXPOSE $PORT
 CMD ["gunicorn", "urbanatura_cdmx.wsgi:application", "--bind", "0.0.0.0:8000"]
