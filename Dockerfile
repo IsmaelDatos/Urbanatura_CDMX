@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY requirements.txt .
+COPY . .
 
 RUN pip install --upgrade pip && \
     pip install --prefix=/install --no-cache-dir -r requirements.txt
@@ -21,21 +21,18 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /install /usr/local
+COPY --from=builder /app/backend /app
 
-WORKDIR /app
-COPY ./backend .
-
-# Crea directorios necesarios y recolecta archivos estáticos
+# Crea directorios necesarios
 RUN mkdir -p /app/staticfiles && \
-    mkdir -p /app/backend/urbanatura_cdmx/static && \
-    python manage.py collectstatic --noinput
+    mkdir -p /app/backend/urbanatura_cdmx/static
+
+# Recolecta archivos estáticos
+RUN python /app/manage.py collectstatic --noinput
 
 ENV PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=urbanatura_cdmx.settings \
-    PORT=8000 \
-    STATIC_ROOT=/app/staticfiles \
-    STATIC_URL=/static/ \
-    WHITENOISE_ROOT=/app/backend/urbanatura_cdmx/static
+    PORT=8000
 
 EXPOSE $PORT
 CMD ["gunicorn", "urbanatura_cdmx.wsgi:application", "--bind", "0.0.0.0:8000"]
