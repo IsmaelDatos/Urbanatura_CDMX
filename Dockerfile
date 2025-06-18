@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 COPY requirements.txt .
 
-# Actualiza pip primero
+# Actualiza pip e instala dependencias
 RUN pip install --upgrade pip && \
     pip install --prefix=/install --no-cache-dir -r requirements.txt
 
@@ -21,14 +21,22 @@ RUN apt-get update && apt-get install -y \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
+# Copia las dependencias instaladas
 COPY --from=builder /install /usr/local
 
 WORKDIR /app
 COPY ./backend .
 
+# Crea directorios necesarios y recolecta archivos estáticos
+RUN mkdir -p /app/staticfiles && \
+    mkdir -p /app/urbanatura_cdmx/static/root && \
+    python manage.py collectstatic --noinput
+
+# Variables de entorno
 ENV PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=urbanatura_cdmx.settings \
-    PORT=8000
+    PORT=8000 \
+    DEBUG=False
 
 EXPOSE $PORT
 CMD ["gunicorn", "urbanatura_cdmx.wsgi:application", "--bind", "0.0.0.0:8000"]
