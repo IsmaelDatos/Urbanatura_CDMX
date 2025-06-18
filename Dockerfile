@@ -26,6 +26,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 COPY --from=builder /install /usr/local
 COPY --from=builder /app/backend /app
+COPY backend/urbanatura_cdmx/templates backend/urbanatura_cdmx/templates
 
 WORKDIR /app
 
