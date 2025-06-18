@@ -1,7 +1,7 @@
 app = "urbanatura-cdmx"
-[build]
-  dockerfile = "backend/Dockerfile"
 
+[build]
+  dockerfile = "Dockerfile"
 [env]
   DJANGO_SETTINGS_MODULE = "urbanatura_cdmx.settings"
   PYTHONUNBUFFERED = "1"
