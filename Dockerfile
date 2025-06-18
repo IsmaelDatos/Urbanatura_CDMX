@@ -28,14 +28,14 @@ ENV PYTHONUNBUFFERED=1 \
 # Copia las dependencias instaladas
 COPY --from=builder /install /usr/local
 
-# Copia el proyecto completo manteniendo la estructura
-COPY --from=builder /app/backend /app/backend
+# Copia el proyecto (nota el cambio aquí)
+COPY --from=builder /app/backend /app
 
-WORKDIR /app/backend
+WORKDIR /app
 
-# Crea directorios necesarios (cambiados de staticfiles a static)
-RUN mkdir -p /app/backend/static && \
-    mkdir -p /app/backend/media
+# Crea directorios necesarios
+RUN mkdir -p /app/static && \
+    mkdir -p /app/media
 
 # Ejecuta collectstatic
 RUN python manage.py collectstatic --noinput
