@@ -25,17 +25,17 @@ COPY --from=builder /install /usr/local
 WORKDIR /app
 COPY ./backend .
 
-# Configuración crítica para static files
+# Crea directorios necesarios y recolecta archivos estáticos
 RUN mkdir -p /app/staticfiles && \
     mkdir -p /app/backend/urbanatura_cdmx/static && \
-    python manage.py collectstatic --noinput --clear
+    python manage.py collectstatic --noinput
 
 ENV PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=urbanatura_cdmx.settings \
     PORT=8000 \
-    DEBUG="False" \
-    STATIC_ROOT="/app/staticfiles" \
-    STATIC_URL="/static/"
+    STATIC_ROOT=/app/staticfiles \
+    STATIC_URL=/static/ \
+    WHITENOISE_ROOT=/app/backend/urbanatura_cdmx/static
 
 EXPOSE $PORT
 CMD ["gunicorn", "urbanatura_cdmx.wsgi:application", "--bind", "0.0.0.0:8000"]
