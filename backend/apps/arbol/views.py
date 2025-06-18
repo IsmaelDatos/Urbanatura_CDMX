@@ -8,7 +8,7 @@ from django.conf import settings
 import os
 
 def inicio(request):
-    return render(request, 'arbol/inicio.html')
+    return render(request, 'arboles/inicio.html')
 
 def agregar_arbol(request):
     if request.method == 'POST':

@@ -20,25 +20,21 @@ RUN apt-get update && apt-get install -y \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
-# Configuración de entorno
 ENV PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=urbanatura_cdmx.settings \
     PORT=8000
 
-# Copia las dependencias instaladas
 COPY --from=builder /install /usr/local
-
-# Copia el proyecto (nota el cambio aquí)
 COPY --from=builder /app/backend /app
 
 WORKDIR /app
 
-# Crea directorios necesarios
-RUN mkdir -p /app/static && \
-    mkdir -p /app/media
+# Crear directorios media y static si es necesario
+RUN mkdir -p /app/media /app/backend/urbanatura_cdmx/static
 
-# Ejecuta collectstatic
-RUN python manage.py collectstatic --noinput --clear
+# Copiar archivos estáticos a la ruta correcta en el contenedor
+COPY backend/urbanatura_cdmx/static backend/urbanatura_cdmx/static
 
 EXPOSE $PORT
+
 CMD ["gunicorn", "urbanatura_cdmx.wsgi:application", "--bind", "0.0.0.0:8000"]
