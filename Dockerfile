@@ -20,22 +20,26 @@ RUN apt-get update && apt-get install -y \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
-# Configura el entorno Python correctamente
-ENV PYTHONPATH=/app
+# Configura el entorno Python
+ENV PYTHONPATH=/app \
+    PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=urbanatura_cdmx.settings \
+    PORT=8000
 
+# Copia las dependencias instaladas
 COPY --from=builder /install /usr/local
+
+# Copia todo el proyecto (no solo el backend)
 COPY --from=builder /app/backend /app
 
 # Crea directorios necesarios
 RUN mkdir -p /app/staticfiles && \
-    mkdir -p /app/urbanatura_cdmx/static
-
-# Configuración de entorno
-ENV PYTHONUNBUFFERED=1 \
-    DJANGO_SETTINGS_MODULE=urbanatura_cdmx.settings \
-    PORT=8000
+    mkdir -p /app/mediafiles
 
 WORKDIR /app
+
+# Ejecuta collectstatic
+RUN python manage.py collectstatic --noinput
 
 # Verifica que el módulo sea importable
 RUN python -c "import urbanatura_cdmx" || echo "Error al importar"
