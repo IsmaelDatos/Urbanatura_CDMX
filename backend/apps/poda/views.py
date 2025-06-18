@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from .models import SolicitudPoda
 from .forms import SolicitudPodaForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
 
 class CrearSolicitudPodaView(LoginRequiredMixin, CreateView):
     model = SolicitudPoda

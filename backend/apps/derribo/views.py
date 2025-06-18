@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import SolicitudDerribo
 from .forms import SolicitudDerriboForm
+from django.contrib.auth.decorators import login_required
+
 
 class CrearSolicitudDerriboView(LoginRequiredMixin, CreateView):
     model = SolicitudDerribo

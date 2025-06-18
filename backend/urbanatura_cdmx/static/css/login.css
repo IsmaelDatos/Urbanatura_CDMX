@@ -1,32 +1,40 @@
-    .toggle-switch {
-      display: flex;
-      align-items: center;
-      background-color: #d9f99d;
-      border-radius: 9999px;
-      padding: 0.5rem;
-      cursor: pointer;
-      width: 100%;
-      max-width: 400px;
-    }
+/* login.css - Versión optimizada */
 
-    .toggle-switch div {
-      flex: 1;
-      text-align: center;
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-    }
+/* Animaciones esenciales */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    .toggle-switch .active {
-      background-color: #047857;
-      color: white;
-    }
-    
-    .hidden {
-      display: none;
-    }
-    
-    .error-message {
-      color: #ef4444;
-      font-size: 0.875rem;
-      margin-top: 0.25rem;
-    }
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+/* Estilos para mensajes de error */
+.error-message {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Estilos para focus states */
+input:focus, button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+}
+
+/* Transiciones básicas */
+button, a, input {
+    transition: all 0.2s ease;
+}
+
+/* Estilo para botón deshabilitado */
+button[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}

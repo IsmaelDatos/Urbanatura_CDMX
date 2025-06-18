@@ -1,0 +1,12 @@
+#map { 
+    height: 400px; 
+    z-index: 0; /* Para que no interfiera con otros elementos */
+}
+
+.leaflet-container {
+    font-family: 'Roboto', sans-serif;
+}
+
+.leaflet-control-attribution {
+    font-size: 9px;
+}

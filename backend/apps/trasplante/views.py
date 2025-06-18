@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import SolicitudTraslado
 from .forms import SolicitudTrasladoForm
+from django.contrib.auth.decorators import login_required
+
 
 class CrearSolicitudTrasladoView(LoginRequiredMixin, CreateView):
     model = SolicitudTraslado
