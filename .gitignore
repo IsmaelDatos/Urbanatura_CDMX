@@ -1,1 +1,11 @@
 venv/
+.env
+.env.local
+*.log
+*.pot
+*.pyc
+__pycache__/
+.idea/
+.vscode/
+fly.toml
+.fly/

@@ -1,0 +1,64 @@
+{% load static %}
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="main-container">
+    <div>
+        <a href="{% url 'arbol:agregar_arbol' %}">
+            <button class="add-button">➕ Agregar Árbol</button>
+        </a>
+    </div>
+
+    <h1 class="page-header">🌳 Lista de Árboles Registrados</h1>
+    
+    {% if arboles %}
+    <div class="cards-container">
+        {% for arbol in arboles %}
+        <div class="tree-card">
+            {% if arbol.foto1 %}
+            <img src="{{ arbol.foto1.url }}" alt="Imagen de {{ arbol.nombre_comun }}" class="tree-image">
+            {% else %}
+            <img src="{% static "css/{% static 'img/default-tree.jpg' %}" %}" alt="Imagen predeterminada de árbol" class="tree-image">
+            {% endif %}
+            
+            <div class="tree-content">
+                <div class="tree-title">🌿 {{ arbol.nombre_comun }}</div>
+                
+                <div class="tree-info">
+                    <strong>📍 Ubicación:</strong> {{ arbol.calle }}{% if arbol.num_ext %}, {{ arbol.num_ext }}{% endif %}
+                </div>
+                
+                <div class="tree-info">
+                    <strong>🏛️ Alcaldía:</strong> {{ arbol.municipio_alcaldia }}
+                </div>
+                
+                <div class="tree-info">
+                    <strong>📏 Altura:</strong> {{ arbol.altura }} m
+                </div>
+                
+                <div class="tree-info">
+                    <strong>🗓️ Fecha Registro:</strong> {{ arbol.fecha_registro|date:"d/m/Y" }}
+                </div>
+                
+                <div class="button-container">
+                    <form action="{% url 'arbol:modificar_arbol' arbol.id %}" method="get">
+                        <button class="edit-button" type="submit">✏️ Editar</button>
+                    </form>
+                    
+                    <form action="{% url 'arbol:eliminar_arbol' arbol.id %}" method="post">
+                        {% csrf_token %}
+                        <button class="delete-button" type="submit">🗑️ Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-trees">
+        No hay árboles registrados. 🌱
+        <a href="{% url 'arbol:agregar_arbol' %}">Agregar un árbol</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

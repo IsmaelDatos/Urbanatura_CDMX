@@ -1,0 +1,8 @@
+        .header-container {
+            display: flex;
+            align-items: center; /* Centrar verticalmente */
+        }
+        .logo-urbana {
+            width: 50px; /* Ajusta el tamaño según sea necesario */
+            margin-right: 10px; /* Espacio entre el logo y el título */
+        }
