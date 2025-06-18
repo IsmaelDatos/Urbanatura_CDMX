@@ -34,7 +34,8 @@ WORKDIR /app
 RUN mkdir -p /app/media /app/backend/urbanatura_cdmx/static
 
 # Copiar archivos estáticos a la ruta correcta en el contenedor
-COPY backend/urbanatura_cdmx/static backend/urbanatura_cdmx/static
+# COPY backend/urbanatura_cdmx/static backend/urbanatura_cdmx/static
+COPY backend/urbanatura_cdmx/static static
 
 EXPOSE $PORT
 
