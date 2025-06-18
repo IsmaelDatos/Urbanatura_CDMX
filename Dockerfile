@@ -28,7 +28,5 @@ ENV PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=urbanatura_cdmx.settings \
     PORT=8000
 
-RUN python manage.py collectstatic --noinput
-
 EXPOSE $PORT
 CMD ["gunicorn", "urbanatura_cdmx.wsgi:application", "--bind", "0.0.0.0:8000"]
