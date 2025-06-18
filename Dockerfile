@@ -33,9 +33,9 @@ COPY --from=builder /app/backend /app/backend
 
 WORKDIR /app/backend
 
-# Crea directorios necesarios
-RUN mkdir -p /app/backend/staticfiles && \
-    mkdir -p /app/backend/mediafiles
+# Crea directorios necesarios (cambiados de staticfiles a static)
+RUN mkdir -p /app/backend/static && \
+    mkdir -p /app/backend/media
 
 # Ejecuta collectstatic
 RUN python manage.py collectstatic --noinput
