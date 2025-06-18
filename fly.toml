@@ -3,7 +3,6 @@ app = "urbanatura-cdmx"
 [build]
   dockerfile = "Dockerfile"
 [env]
-  SECRET_KEY=f@(p@z95+8t*!8-&wxx1tuw420ctt0o4^1ry*1lp2(-t@r7)8c
   DJANGO_SETTINGS_MODULE = "urbanatura_cdmx.settings"
   PYTHONUNBUFFERED = "1"
 [http_service]
