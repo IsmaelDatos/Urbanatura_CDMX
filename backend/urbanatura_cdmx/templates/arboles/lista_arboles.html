@@ -18,7 +18,7 @@
             {% if arbol.foto1 %}
             <img src="{{ arbol.foto1.url }}" alt="Imagen de {{ arbol.nombre_comun }}" class="tree-image">
             {% else %}
-            <img src="{% static "css/{% static 'img/default-tree.jpg' %}" %}" alt="Imagen predeterminada de árbol" class="tree-image">
+            <img src="{% static 'img/default-tree.jpg' %}" alt="Imagen predeterminada de árbol" class="tree-image">
             {% endif %}
             
             <div class="tree-content">
