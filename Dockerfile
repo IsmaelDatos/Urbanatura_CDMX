@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY backend/requirements.txt .  # Cambiado para apuntar al archivo correcto
+COPY COPY requirements.txt .
 
 RUN pip install --prefix=/install --no-cache-dir -r requirements.txt
 
