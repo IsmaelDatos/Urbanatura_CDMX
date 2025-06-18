@@ -94,11 +94,10 @@ USE_TZ = True
 
 # Configuración de archivos estáticos
 STATIC_URL = '/static/'
-STATIC_ROOT = ''
+STATIC_ROOT = '' 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'backend/urbanatura_cdmx/static')]
 
 # Configuración de WhiteNoise
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_MANIFEST_STRICT = False
 WHITENOISE_ALLOW_ALL_ORIGINS = True
