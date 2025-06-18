@@ -79,7 +79,3 @@ def documentacion(request):
 
 def informacion_empresa(request):
     return render(request, 'arboles/informacion_empresa.html')
-    if request.method == 'POST':
-        return redirect('nombre_de_la_url_exitosa')
-    return render(request, 'arboles/tu_template.html')
-    return render(request, 'arboles/solicitud_exitosa.html')

@@ -204,7 +204,6 @@ TIME_ZONE = 'America/Mexico_City'
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'backend/urbanatura_cdmx/static')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
@@ -238,3 +237,7 @@ LOGGING = {
         'level': 'WARNING',
     },
 }
+WHITENOISE_ROOT = os.path.join(BASE_DIR, 'urbanatura_cdmx/static/root')
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_ALLOW_ALL_ORIGINS = True
