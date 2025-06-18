@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 COPY requirements.txt .
 
-RUN pip install --prefix=/install --no-cache-dir -r requirements.txt
+# Actualiza pip primero
+RUN pip install --upgrade pip && \
+    pip install --prefix=/install --no-cache-dir -r requirements.txt
 
 # Etapa de producción
 FROM python:3.9-slim
