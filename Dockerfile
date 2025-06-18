@@ -28,14 +28,13 @@ COPY --from=builder /install /usr/local
 COPY --from=builder /app/backend /app
 COPY backend/urbanatura_cdmx/templates backend/urbanatura_cdmx/templates
 
+# Copiar archivos estáticos a la raíz /static del contenedor
+COPY backend/urbanatura_cdmx/static /static
+
 WORKDIR /app
 
-# Crear directorios media y static si es necesario
-RUN mkdir -p /app/media /app/backend/urbanatura_cdmx/static
-
-# Copiar archivos estáticos a la ruta correcta en el contenedor
-# COPY backend/urbanatura_cdmx/static backend/urbanatura_cdmx/static
-COPY backend/urbanatura_cdmx/static static
+# Crear directorios media si es necesario
+RUN mkdir -p /app/media
 
 EXPOSE $PORT
 
