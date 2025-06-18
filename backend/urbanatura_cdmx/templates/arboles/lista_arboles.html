@@ -1,7 +1,9 @@
 {% load static %}
 {% block content %}
 {% include 'navbar.html' %}
-
+<head>
+    <link rel="stylesheet" href="{% static 'css/lista_arboles.css' %}">
+</head>
 <div class="main-container">
     <div>
         <a href="{% url 'arbol:agregar_arbol' %}">
