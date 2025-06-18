@@ -1,12 +1,11 @@
-app = "urbanatura-cdmx"  # Cambia esto a un nombre único para tu app
-
+app = "urbanatura-cdmx"
 [build]
   dockerfile = "backend/Dockerfile"
 
 [env]
   DJANGO_SETTINGS_MODULE = "urbanatura_cdmx.settings"
   PYTHONUNBUFFERED = "1"
-/home/ismael/Desktop/urbanatura_cdmx/backend/fly.toml
+
 [http_service]
   internal_port = 8000
   force_https = true
