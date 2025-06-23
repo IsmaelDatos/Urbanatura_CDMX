@@ -5,6 +5,8 @@ app = "urbanatura-cdmx"
 [env]
   DJANGO_SETTINGS_MODULE = "urbanatura_cdmx.settings"
   PYTHONUNBUFFERED = "1"
+  STATIC_URL = "/static/"
+  STATIC_ROOT = "/static"
   
 [http_service]
   internal_port = 8000

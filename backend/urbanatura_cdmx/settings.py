@@ -92,13 +92,11 @@ TIME_ZONE = 'America/Mexico_City'
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = '/static/'
-STATIC_ROOT = ''
-STATICFILES_DIRS = ['/static']
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'backend', 'urbanatura_cdmx', 'static')]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' if not DEBUG else 'django.contrib.staticfiles.storage.StaticFilesStorage'
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_MANIFEST_STRICT = False
 WHITENOISE_ALLOW_ALL_ORIGINS = True
-WHITENOISE_ROOT = '/static'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -134,6 +132,9 @@ LOGGING = {
         'level': 'WARNING',
     },
 }
+LOGIN_URL = '/usuarios/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 
 # #----------------------Config-local-mael-----------------------------

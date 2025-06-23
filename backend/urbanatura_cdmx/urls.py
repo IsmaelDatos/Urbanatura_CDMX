@@ -7,7 +7,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.arbol.urls')),
     path('usuarios/', include('apps.usuarios.urls')),
-    
     path('poda/', include('apps.poda.urls', namespace='poda')),
     path('derribo/', include('apps.derribo.urls', namespace='derribo')),
     path('trasplante/', include('apps.trasplante.urls', namespace='trasplante')),
