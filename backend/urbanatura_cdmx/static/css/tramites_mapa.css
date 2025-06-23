@@ -1,0 +1,45 @@
+/* Estilos para el mapa */
+#map { 
+    height: 400px; 
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    z-index: 0;
+}
+
+/* Estilos para los campos de coordenadas */
+.coords-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.coords-container .coord-input {
+    flex: 1;
+}
+
+/* Loading indicator */
+#cp-loading {
+    display: none;
+    color: #3b82f6;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+#cp-loading i {
+    margin-right: 0.25rem;
+}
+
+/* Error messages */
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Estilos para selects */
+select:disabled {
+    background-color: #f3f4f6;
+    color: #6b7280;
+}

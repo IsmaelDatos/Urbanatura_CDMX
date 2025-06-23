@@ -110,7 +110,6 @@
     font-size: 1.5rem;
 }
 
-/* Asegurar que el mapa sea responsive */
 .leaflet-container {
     height: 100%;
     width: 100%;

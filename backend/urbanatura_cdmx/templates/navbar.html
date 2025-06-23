@@ -4,8 +4,10 @@
     <nav class="navbar">
         <ul class="nav-enlaces">
             <div class="nav-left">
-                <a href="{% url 'arbol:inicio' %}" id="logo" style="text-decoration: none;">UA</a>
-                <a href="{% url 'arbol:inicio' %}" style="text-decoration: none;"><p id="proyecto_nombre">Urbanatura CDMX</p></a>
+                <a href="{% url 'arbol:inicio' %}" id="logo" style="text-decoration: none;">
+                    <img src="{% static 'img/logo_urbanatura.png' %}" alt="Urbanatura CDMX" class="logo-image">
+                    <a href="{% url 'arbol:inicio' %}" style="text-decoration: none;"><p id="proyecto_nombre">Urbanatura CDMX</p></a>
+                </a>
             </div>
             
             <div class="nav-right">
