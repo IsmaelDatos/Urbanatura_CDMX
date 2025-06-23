@@ -1,172 +1,81 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseNotAllowed
+from django.shortcuts import render,redirect,get_object_or_404
+from django.urls import reverse
+from .forms import ArbolForm
+from .models import Arbol
+from django.http import JsonResponse
+from .forms import ArbolForm
 from django.conf import settings
-from .forms import CiudadanoRegistrationForm, InstitucionRegistrationForm, LoginForm
 import os
 
-def register_ciudadano(request):
-    if request.method == 'GET':
-        template_path = os.path.join(settings.BASE_DIR, 'backend', 'urbanatura_cdmx', 'templates', 'registration', 'register.html')
-        if not os.path.exists(template_path):
-            return JsonResponse({
-                'success': False,
-                'error': 'Template no encontrado'
-            }, status=500)
+def inicio(request):
+    return render(request, 'arboles/inicio.html')
 
-        return render(request, 'registration/register.html', {
-            'form': CiudadanoRegistrationForm(),
-            'STATIC_URL': settings.STATIC_URL
-        })
-    
-    elif request.method == 'POST':
+def agregar_arbol(request):
+    if request.method == 'POST':
         try:
-            form = CiudadanoRegistrationForm(request.POST)
+            post_data = request.POST.copy()
+            post_data['entidad_federativa'] = 'CDMX'
+            
+            form = ArbolForm(post_data, request.FILES)
+            
             if form.is_valid():
-                user = form.save()
-                login(request, user)
-                return JsonResponse({
-                    'success': True,
-                    'redirect_url': '/'
-                })
-            
-            # Mejor manejo de errores del formulario
-            errors = {}
-            for field, error_list in form.errors.items():
-                if field == '__all__':
-                    errors['non_field_errors'] = error_list
-                else:
-                    errors[field] = error_list[0] if error_list else 'Error desconocido'
-            
-            return JsonResponse({
-                'success': False,
-                'errors': errors
-            }, status=400)
-            
-        except Exception as e:
-            # Log del error para diagnóstico
-            print(f"Error en register_ciudadano: {str(e)}")
-            return JsonResponse({
-                'success': False,
-                'error': 'Error interno del servidor'
-            }, status=500)
-    
-    return HttpResponseNotAllowed(['GET', 'POST'])
-
-def register_institucion(request):
-    if request.method == 'GET':
-        # Verificar si el template existe
-        template_path = os.path.join(settings.BASE_DIR, 'backend', 'urbanatura_cdmx', 'templates', 'registration', 'register_institucion.html')
-        if not os.path.exists(template_path):
-            return JsonResponse({
-                'success': False,
-                'error': 'Template no encontrado'
-            }, status=500)
-
-        return render(request, 'registration/register_institucion.html', {
-            'form': InstitucionRegistrationForm(),
-            'STATIC_URL': settings.STATIC_URL
-        })
-    
-    elif request.method == 'POST':
-        try:
-            form = InstitucionRegistrationForm(request.POST)
-            if form.is_valid():
-                user = form.save()
-                login(request, user)
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Registro exitoso como institución',
-                    'redirect_url': '/'
-                })
-            
-            # Manejo mejorado de errores
-            errors = {}
-            for field, error_list in form.errors.items():
-                if field == '__all__':
-                    errors['non_field_errors'] = error_list
-                else:
-                    errors[field] = error_list[0] if error_list else 'Error desconocido'
-            
-            return JsonResponse({
-                'success': False,
-                'errors': errors
-            }, status=400)
-            
-        except Exception as e:
-            print(f"Error en register_institucion: {str(e)}")
-            return JsonResponse({
-                'success': False,
-                'error': 'Error interno del servidor'
-            }, status=500)
-    
-    return JsonResponse({
-        'success': False, 
-        'error': 'Método no permitido'
-    }, status=405)
-
-def user_login(request):
-    if request.method == 'GET':
-        # Verificar template
-        template_path = os.path.join(settings.BASE_DIR, 'backend', 'urbanatura_cdmx', 'templates', 'registration', 'login.html')
-        if not os.path.exists(template_path):
-            return JsonResponse({
-                'success': False,
-                'error': 'Template no encontrado'
-            }, status=500)
-
-        return render(request, 'registration/login.html', {
-            'form': LoginForm(),
-            'STATIC_URL': settings.STATIC_URL
-        })
-    
-    elif request.method == 'POST':
-        try:
-            form = LoginForm(request.POST)
-            if form.is_valid():
-                email = form.cleaned_data['email']
-                password = form.cleaned_data['password']
-                user = authenticate(request, username=email, password=password)
+                arbol = form.save()
                 
-                if user is not None:
-                    login(request, user)
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return JsonResponse({
                         'success': True,
-                        'redirect_url': '/'
+                        'redirect_url': reverse('arbol:lista_arboles')
                     })
-                else:
-                    return JsonResponse({
-                        'success': False,
-                        'error': 'Correo electrónico o contraseña incorrectos'
-                    }, status=400)
-            
-            # Manejo de errores del formulario
-            errors = {}
-            for field, error_list in form.errors.items():
-                errors[field] = error_list[0] if error_list else 'Error desconocido'
-            
-            return JsonResponse({
-                'success': False,
-                'errors': errors
-            }, status=400)
-            
+                
+                return redirect('arbol:lista_arboles')
+                
+            else:
+                print("Errores de formulario:", form.errors)
+                return JsonResponse({
+                    'success': False,
+                    'errors': form.errors
+                }, status=400)
+                
         except Exception as e:
-            print(f"Error en user_login: {str(e)}")
+            print("Error en la vista:", str(e))
             return JsonResponse({
                 'success': False,
-                'error': 'Error interno del servidor'
+                'error': str(e)
             }, status=500)
-    
-    return JsonResponse({
-        'success': False,
-        'error': 'Método no permitido'
-    }, status=405)
 
-def user_logout(request):
+    form = ArbolForm(initial={
+        'entidad_federativa': 'CDMX',
+    })
+    return render(request, 'arboles/agregar_arbol.html', {'form': form})
+
+def lista_arboles(request):
     try:
-        logout(request)
-        return redirect('arbol:inicio')
+        arboles = Arbol.objects.all().order_by('-fecha_registro')
+        return render(request, 'arboles/lista_arboles.html', {'arboles': arboles})
     except Exception as e:
-        print(f"Error en user_logout: {str(e)}")
-        return redirect('arbol:inicio')
+        print(f"Error: {e}")
+        return render(request, 'arboles/lista_arboles.html', {'arboles': []})
+
+def modificar_arbol(request, id):
+    arbol = get_object_or_404(Arbol, id=id)
+    if request.method == 'POST':
+        form = ArbolForm(request.POST, request.FILES, instance=arbol)
+        if form.is_valid():
+            form.save()
+            return redirect('arbol:lista_arboles')
+    else:
+        form = ArbolForm(instance=arbol)
+    return render(request, 'arboles/agregar_arbol.html', {'form': form})
+
+def eliminar_arbol(request, id):
+    arbol = get_object_or_404(Arbol, id=id)
+    if request.method == 'POST':
+        arbol.delete()
+        return redirect('arbol:lista_arboles') 
+    return render(request, 'arboles/eliminar_arbol.html', {'arbol': arbol})
+
+def documentacion(request):
+    return render(request, 'arboles/documentacion.html')
+
+def informacion_empresa(request):
+    return render(request, 'arboles/informacion_empresa.html')
