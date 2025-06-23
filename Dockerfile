@@ -26,18 +26,19 @@ COPY --from=builder /install /usr/local
 # 2. Copiar todo el backend (incluyendo código Python)
 COPY --from=builder /app/backend /app
 
-# 3. Copiar archivos estáticos a ambas ubicaciones por compatibilidad
+# 3. Copiar archivos estáticos a ubicación compatible con WhiteNoise
+COPY --from=builder /app/backend/urbanatura_cdmx/static /app/staticfiles
 COPY --from=builder /app/backend/urbanatura_cdmx/static /app/backend/urbanatura_cdmx/static
-COPY --from=builder /app/backend/urbanatura_cdmx/static /static
 
 # 4. Crear directorios necesarios
-RUN mkdir -p /app/media
+RUN mkdir -p /app/media /app/staticfiles
 
 # 5. Configurar permisos (importante para Fly.io)
-RUN chmod -R a+rwx /app/media /static /app/backend/urbanatura_cdmx/static
+RUN chmod -R a+rwx /app/media /app/staticfiles
 
 WORKDIR /app
 EXPOSE $PORT
+RUN python manage.py collectstatic --noinput
 CMD ["gunicorn", "urbanatura_cdmx.wsgi:application", "--bind", "0.0.0.0:8000"]
 
 # FROM python:3.9-slim as builder
