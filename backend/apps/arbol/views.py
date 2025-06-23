@@ -6,9 +6,20 @@ from django.http import JsonResponse
 from .forms import ArbolForm
 from django.conf import settings
 import os
+# import geopandas as gpd
+import folium
 
 def inicio(request):
-    return render(request, 'arboles/inicio.html')
+    m = folium.Map(
+        location=[19.4326, -99.1332], 
+        tiles="cartodbpositron",
+        zoom_start=12
+    )
+    map_html = m._repr_html_()
+    context = {
+        'map_html': map_html
+    }
+    return render(request, 'arboles/inicio.html', context)
 
 def agregar_arbol(request):
     if request.method == 'POST':

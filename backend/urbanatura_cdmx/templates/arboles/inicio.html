@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="{% static 'css/inicio.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Folium CSS/JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </head>
 <body>
     {% include 'navbar.html' %}
@@ -17,15 +20,18 @@
             <h2>Objetivo</h2>
             <p>Crear un inventario digital del arbolado en la Ciudad de México, permitiendo a cualquiera registrar, monitorear y analizar el estado de los árboles urbanos.</p>
         </div>
-        <div class="mapa">
-            <h2>Mapa</h2>
-            <p>Este es un espacio reservado para el mapa interactivo que mostrará la ubicación de los árboles registrados en la base de datos.</p>
+        
+        <div class="mapa-container">
+            <h2>Mapa del Arbolado</h2>
+            <div class="mapa" style="height: 500px; width: 100%;">
+                {{ map_html|safe }}
+            </div>
         </div>
+        
         <div class="botones">
             <a href="{% url 'arbol:agregar_arbol' %}" class="btn">Agregar Árbol</a>
             <a href="{% url 'arbol:lista_arboles' %}" class="btn">Ver Lista Completa</a>
         </div>
     </main>
-    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
