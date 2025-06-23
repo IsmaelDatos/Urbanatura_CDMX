@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from .forms import ArbolForm
 from django.conf import settings
 import os
-# import geopandas as gpd
+import geopandas as gpd
 import folium
 
 def inicio(request):
