@@ -1,1 +1,24 @@
 {% load static %}
+{% include 'navbar.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Ciudadano - Urbanatura CDMX</title>
+    <link rel="stylesheet" href="{% static 'css/home_ciudadano.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <main class="container">
+        <h1>Bienvenido Ciudadano</h1>
+        <p>Esta es tu página de perfil como ciudadano.</p>
+        <div class="user-info">
+            <p>Nombre: {{ user.first_name }} {{ user.primer_apellido }}</p>
+            <p>Email: {{ user.email }}</p>
+            <p>Dirección: {{ user.calle }} {{ user.num_ext }}, {{ user.colonia }}, {{ user.municipio }}</p>
+        </div>
+    </main>
+</body>
+</html>

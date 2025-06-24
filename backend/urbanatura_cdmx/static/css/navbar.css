@@ -213,3 +213,56 @@ body {
         font-size: 1rem;
     }
 }
+/* Estilos para el dropdown de usuario */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.user-dropdown .user-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 2.1rem;
+    color: var(--color-texto);
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.user-dropdown .user-icon:hover {
+    color: var(--color-icono-hover);
+    transform: scale(1.1);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--color-hover);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 0 0 0.8rem 0.8rem;
+}
+
+.dropdown-content a {
+    color: var(--color-texto);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--color-primario);
+    padding-left: 20px;
+}
+
+.user-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.user-dropdown:hover .user-icon {
+    color: var(--color-icono-hover);
+}

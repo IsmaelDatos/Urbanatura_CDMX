@@ -103,3 +103,12 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('arbol:inicio')
+
+@login_required
+def home_ciudadano(request):
+    return render(request, 'home/home_ciudadano.html')
+
+@login_required
+def home_institucion(request):
+    return render(request, 'home/home_institucion.html')
+

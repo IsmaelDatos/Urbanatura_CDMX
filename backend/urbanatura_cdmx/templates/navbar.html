@@ -1,4 +1,64 @@
+<!-- /home/ismael/Desktop/urbanatura_cdmx/backend/urbanatura_cdmx/templates/navbar.html -->
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+<div class="navbar-container">
+    <nav class="navbar">
+        <ul class="nav-enlaces">
+            <div class="nav-left">
+                <a href="{% url 'arbol:inicio' %}" id="logo" style="text-decoration: none;">
+                    <img src="{% static 'img/logo_urbanatura.png' %}" alt="Urbanatura CDMX" class="logo-image">
+                    <a href="{% url 'arbol:inicio' %}" style="text-decoration: none;"><p id="proyecto_nombre">Urbanatura CDMX</p></a>
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <li class="nav-enlace secciones">
+                    <a href="{% url 'arbol:inicio' %}">Inicio</a>
+                </li>
+                <li class="nav-enlace secciones">
+                    <a href="#">Trámites<span class="arrow">▼</span></a>
+                    <ul class="desplegable">
+                        <li><a href="{% url 'poda:solicitar' %}"><i class="fas fa-cut" style="margin-right: 8px;"></i>Poda</a></li>
+                        <li><a href="{% url 'derribo:solicitar' %}"><i class="fas fa-tree" style="margin-right: 8px;"></i>Derribo</a></li>
+                        <li><a href="{% url 'trasplante:solicitar' %}"><i class="fas fa-seedling" style="margin-right: 8px;"></i>Trasplante</a></li>
+                    </ul>
+                </li>
+                <li class="nav-enlace secciones">
+                    <a href="{% url 'arbol:informacion_empresa' %}">Nosotros<span class="arrow">▼</span></a>
+                    <ul class="desplegable">
+                        <li><a href="https://www.sedema.cdmx.gob.mx/"><i class="fas fa-users" style="margin-right: 8px;"></i>Quiénes somos</a></li>
+                        <li><a href="#"><i class="fas fa-newspaper" style="margin-right: 8px;"></i>Blog</a></li>
+                        <li><a href="{% url 'arbol:documentacion' %}"><i class="fas fa-file-alt" style="margin-right: 8px;"></i>Documentación</a></li>
+                    </ul>
+                </li>
+                
+                <div class="user-container">
+                    {% if user.is_authenticated %}
+                        <div class="user-dropdown">
+                            <button class="user-icon">
+                                <i class="fas fa-user-circle"></i>
+                            </button>
+                            <div class="dropdown-content">
+                                {% if user.tipo_usuario == 'CIUDADANO' %}
+                                    <a href="{% url 'home_ciudadano' %}"><i class="fas fa-user mr-2"></i>Mi Perfil</a>
+                                {% else %}
+                                    <a href="{% url 'home_institucion' %}"><i class="fas fa-building mr-2"></i>Mi Perfil</a>
+                                {% endif %}
+                                <a href="{% url 'usuarios:logout' %}"><i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'usuarios:login' %}" class="user-icon" title="Iniciar sesión">
+                            <i class="fas fa-user-circle"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </ul>
+    </nav>
+</div>
+
+{% comment %} {% load static %}
 <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 <div class="navbar-container">
     <nav class="navbar">
@@ -45,4 +105,4 @@
             </div>
         </ul>
     </nav>
-</div>
+</div> {% endcomment %}
