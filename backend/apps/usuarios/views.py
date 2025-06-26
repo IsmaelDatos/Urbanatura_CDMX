@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .forms import CiudadanoRegistrationForm, InstitucionRegistrationForm, LoginForm
+from .forms import CiudadanoRegistrationForm, InstitucionRegistrationForm, LoginForm, CiudadanoEditForm, InstitucionEditForm
 from django.http import HttpResponseNotAllowed
 from django.conf import settings
 
@@ -112,3 +112,28 @@ def home_ciudadano(request):
 def home_institucion(request):
     return render(request, 'home/home_institucion.html')
 
+@login_required
+def edit_ciudadano(request):
+    if request.method == 'POST':
+        form = CiudadanoEditForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Perfil actualizado correctamente')
+            return redirect('usuarios:edit_ciudadano')
+    else:
+        form = CiudadanoEditForm(instance=request.user)
+    
+    return render(request, 'usuarios/edit_ciudadano.html', {'form': form})
+
+@login_required
+def edit_institucion(request):
+    if request.method == 'POST':
+        form = InstitucionEditForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Perfil institucional actualizado correctamente')
+            return redirect('usuarios:edit_institucion')
+    else:
+        form = InstitucionEditForm(instance=request.user)
+    
+    return render(request, 'usuarios/edit_institucion.html', {'form': form})

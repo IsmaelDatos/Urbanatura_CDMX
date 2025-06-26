@@ -18,6 +18,9 @@
             <p>Nombre: {{ user.first_name }} {{ user.primer_apellido }}</p>
             <p>Email: {{ user.email }}</p>
             <p>Dirección: {{ user.calle }} {{ user.num_ext }}, {{ user.colonia }}, {{ user.municipio }}</p>
+            <a href="{% url 'usuarios:edit_ciudadano' %}" class="text-blue-600 hover:text-blue-800">
+            <i class="fas fa-edit mr-1"></i>Editar Perfil</a>
+            
         </div>
     </main>
 </body>

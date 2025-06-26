@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% include 'navbar.html' %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+    <h1 class="text-2xl font-bold mb-6">Editar Perfil</h1>
+    
+    <form method="POST" class="bg-white p-6 rounded-lg shadow-md">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Nombre</label>
+                {{ form.first_name }}
+            </div>
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Primer Apellido</label>
+                {{ form.primer_apellido }}
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-medium mb-1">Segundo Apellido</label>
+            {{ form.segundo_apellido }}
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-medium mb-1">Teléfono</label>
+            {{ form.telefono }}
+        </div>
+        
+        <h2 class="text-xl font-bold mt-6 mb-4">Dirección</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Calle</label>
+                {{ form.calle }}
+            </div>
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Número Ext.</label>
+                {{ form.num_ext }}
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-medium mb-1">Número Int.</label>
+            {{ form.num_int }}
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Municipio/Alcaldía</label>
+                {{ form.municipio }}
+            </div>
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Código Postal</label>
+                {{ form.codigo_postal }}
+            </div>
+        </div>
+        
+        <div class="mb-6">
+            <label class="block text-gray-700 font-medium mb-1">Referencias</label>
+            {{ form.referencias }}
+        </div>
+        
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">
+            Guardar Cambios
+        </button>
+    </form>
+</div>
+{% endblock %}

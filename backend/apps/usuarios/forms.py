@@ -74,3 +74,39 @@ class InstitucionRegistrationForm(UserCreationForm):
 class LoginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
+    
+class CiudadanoEditForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['first_name', 'primer_apellido', 'segundo_apellido', 'telefono',
+                 'calle', 'num_ext', 'num_int', 'municipio', 'codigo_postal', 'referencias']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['codigo_postal'].validators = [
+            RegexValidator(
+                regex='^[0-9]{5}$',
+                message='El código postal debe tener 5 dígitos'
+            )
+        ]
+
+class InstitucionEditForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['nombre_institucion', 'rfc', 'telefono',
+                 'calle', 'num_ext', 'num_int', 'municipio', 'codigo_postal', 'referencias']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['rfc'].validators = [
+            RegexValidator(
+                regex='^[A-Z&Ñ]{3,4}[0-9]{6}[A-Z0-9]{3}$',
+                message='El RFC no tiene un formato válido'
+            )
+        ]
+        self.fields['codigo_postal'].validators = [
+            RegexValidator(
+                regex='^[0-9]{5}$',
+                message='El código postal debe tener 5 dígitos'
+            )
+        ]
