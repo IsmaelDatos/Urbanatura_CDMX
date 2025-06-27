@@ -1,6 +1,3 @@
-/* login.css - Versión optimizada */
-
-/* Animaciones esenciales */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -12,7 +9,6 @@
     40%, 80% { transform: translateX(5px); }
 }
 
-/* Estilos para mensajes de error */
 .error-message {
     animation: fadeIn 0.3s ease-out;
 }
@@ -21,20 +17,113 @@
     animation: shake 0.5s ease-in-out;
 }
 
-/* Estilos para focus states */
 input:focus, button:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
 }
 
-/* Transiciones básicas */
 button, a, input {
     transition: all 0.2s ease;
 }
 
-/* Estilo para botón deshabilitado */
 button[disabled] {
     opacity: 0.7;
     cursor: not-allowed;
     transform: none !important;
+}
+
+.edit-profile-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.edit-profile-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.edit-profile-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2d3748;
+    font-weight: 500;
+}
+
+.edit-profile-form input,
+.edit-profile-form select,
+.edit-profile-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+}
+
+.edit-profile-form input:focus,
+.edit-profile-form select:focus,
+.edit-profile-form textarea:focus {
+    border-color: #48bb78;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.2);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.edit-profile-form input[readonly] {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.rfc-format-hint {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.form-actions a, .form-actions button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.edit-institucion-container {
+    max-width: 800px;
+}
+
+.edit-institucion-form {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.rfc-field {
+    position: relative;
+}
+
+.rfc-hint {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.institucion-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
 }
