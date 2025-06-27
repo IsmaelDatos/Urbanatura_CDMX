@@ -3,34 +3,35 @@
     --color-hover: #339f00;
     --color-texto: #ffffff;
     --color-icono-hover: #d8d8d8;
+    --espacio-lateral: 1.5cm;
+    --espacio-superior: 1cm;
 }
 
-/* Solución para el solapamiento con navbar fija */
 body {
-    padding-top: 90px;
+    padding-top: calc(70px + var(--espacio-superior));
 }
 
 .navbar-container {
-    width: 100%;
+    width: calc(100% - 2 * var(--espacio-lateral));
     position: fixed;
-    top: 0;
-    left: 0;
+    top: var(--espacio-superior);
+    left: var(--espacio-lateral);
+    right: var(--espacio-lateral);
     z-index: 1000;
-    display: flex;
-    justify-content: center;
+    margin: 0 auto;
     background: transparent;
 }
 
 .navbar {
-    width: 95%;
-    max-width: 1400px;
+    width: 100%;
     display: flex;
-    padding: 0.8rem 2.5rem;
+    padding: 0.8rem 2rem;
     background: var(--color-primario);
-    border-radius: 0 0 2rem 2rem;
+    border-radius: 2rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
     height: 70px;
+    margin: 0 auto;
 }
 
 .nav-enlaces {
@@ -39,25 +40,34 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    margin: 0 auto;
+    margin: 0;
+    padding: 0;
 }
 
 .nav-left {
     display: flex;
     align-items: center;
-    gap: 10px
+    gap: 10px;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: inherit;
 }
 
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 1.2rem;
+    gap: 1rem;
 }
 
 .nav-enlace {
     list-style: none;
     height: 100%;
-    padding: 0.9rem 1.3rem;
+    padding: 0.9rem 1.2rem;
     font-weight: 700;
     cursor: pointer;
     position: relative;
@@ -74,6 +84,7 @@ body {
     color: var(--color-texto);
     display: flex;
     align-items: center;
+    gap: 5px;
 }
 
 .desplegable {
@@ -92,11 +103,12 @@ body {
     opacity: 0;
     transform: translateY(-8px);
     transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    z-index: 1001;
 }
 
 .desplegable li {
     list-style: none;
-    padding: 0.8rem 1.5rem;
+    padding: 0.8rem 1.2rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -104,7 +116,7 @@ body {
 
 .nav-enlace:hover {
     background-color: var(--color-hover);
-    border-radius: 0.8rem 0.8rem 0 0;
+    border-radius: 0.8rem;
 }
 
 .secciones:hover .desplegable {
@@ -115,18 +127,23 @@ body {
 
 .desplegable li:hover {
     background: var(--color-primario);
-    padding-left: 1.7rem;
+    padding-left: 1.4rem;
 }
 
 .logo-image {
     height: 40px;
     width: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo-image:hover {
+    transform: scale(1.05);
 }
 
 .user-container {
     display: flex;
     align-items: center;
-    margin-left: 0.8rem;
+    margin-left: 0.5rem;
 }
 
 .user-icon {
@@ -134,6 +151,9 @@ body {
     color: var(--color-texto);
     transition: all 0.3s ease;
     padding: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .user-icon:hover {
@@ -153,10 +173,54 @@ body {
     transform: rotate(180deg);
 }
 
+#proyecto_nombre {
+    margin: 0;
+    font-weight: bold;
+    color: var(--color-texto); 
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--color-hover);
+    min-width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1001;
+    border-radius: 0.8rem 0 0.8rem 0.8rem;
+}
+
+.dropdown-content a {
+    color: var(--color-texto);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--color-primario);
+    padding-left: 20px;
+}
+
+.user-dropdown:hover .dropdown-content {
+    display: block;
+}
+
 @media (max-width: 1200px) {
     .navbar {
-        padding: 0.8rem 1.8rem;
-        border-radius: 0 0 1.5rem 1.5rem;
+        padding: 0.8rem 1.5rem;
+        border-radius: 1.5rem;
     }
     
     .nav-enlace {
@@ -165,9 +229,18 @@ body {
     }
 }
 
+@media (max-width: 992px) {
+    .navbar-container {
+        width: calc(100% - 2rem);
+        left: 1rem;
+        right: 1rem;
+    }
+}
+
 @media (max-width: 768px) {
     body {
-        padding-top: 120px;
+        padding-top: calc(120px + var(--espacio-superior));
+        border-radius: 1rem;
     }
     
     .navbar {
@@ -192,77 +265,34 @@ body {
         position: relative;
         width: 100%;
         box-shadow: none;
+        display: none;
+    }
+    
+    .secciones:hover .desplegable {
+        display: block;
     }
     
     .logo-image {
-        height: 40px;
+        height: 35px;
     }
-}
-#proyecto_nombre {
-    margin: 0;
-    font-weight: bold;
-    color: #ffff; 
-    font-size: 1.2rem;
+    
+    #proyecto_nombre {
+        font-size: 1.1rem;
+    }
 }
 
-@media (max-width: 768px) {
-    .logo-image {
-        height: 30px;
+@media (max-width: 576px) {
+    :root {
+        --espacio-lateral: 0.5cm;
     }
+    
+    .navbar-container {
+        width: calc(100% - 1cm);
+        left: 0.5cm;
+        right: 0.5cm;
+    }
+    
     #proyecto_nombre {
         font-size: 1rem;
     }
-}
-/* Estilos para el dropdown de usuario */
-.user-dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.user-dropdown .user-icon {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 2.1rem;
-    color: var(--color-texto);
-    padding: 0.5rem;
-    transition: all 0.3s ease;
-}
-
-.user-dropdown .user-icon:hover {
-    color: var(--color-icono-hover);
-    transform: scale(1.1);
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: var(--color-hover);
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    border-radius: 0 0 0.8rem 0.8rem;
-}
-
-.dropdown-content a {
-    color: var(--color-texto);
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-}
-
-.dropdown-content a:hover {
-    background-color: var(--color-primario);
-    padding-left: 20px;
-}
-
-.user-dropdown:hover .dropdown-content {
-    display: block;
-}
-
-.user-dropdown:hover .user-icon {
-    color: var(--color-icono-hover);
 }

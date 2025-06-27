@@ -6,208 +6,116 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8 max-w-2xl mt-16">
-    <h1 class="text-2xl font-bold mb-6 text-green-800">Editar Perfil Institucional</h1>
-    
-    {% if messages %}
-    <div class="mb-4">
+<div class="edit-profile-container">
+  <div class="edit-profile-card">
+    <!-- Cabecera -->
+    <div class="edit-profile-header">
+      <h1>Editar Perfil Institucional</h1>
+    </div>
+
+    <!-- Formulario -->
+    <form method="POST" class="edit-profile-form">
+      {% csrf_token %}
+
+      {# Mensajes flash #}
+      {% if messages %}
+      <div class="mb-6">
         {% for message in messages %}
-        <div class="p-3 rounded {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
-            {{ message }}
+        <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+          {{ message }}
         </div>
         {% endfor %}
-    </div>
-    {% endif %}
-    
-    <form method="POST" class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-        {% csrf_token %}
-        
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-1">Nombre de la Institución *</label>
-            {{ form.nombre_institucion }}
-            {% if form.nombre_institucion.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.nombre_institucion.errors.0 }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Información de la institución -->
+      <div class="form-section">
+        <h2><i class="fas fa-building"></i> Información de la Institución</h2>
+
+        <div class="form-group">
+          <label for="nombre_institucion">Nombre de la Institución *</label>
+          {{ form.nombre_institucion|add_class:"form-control" }}
+          {% if form.nombre_institucion.errors %}
+          <p class="error-message">{{ form.nombre_institucion.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div class="form-group rfc-field">
+          <label for="rfc">RFC *</label>
+          {{ form.rfc|add_class:"form-control" }}
+          <p class="rfc-hint">Formato: 3-4 letras, 6 dígitos y 3 caracteres alfanuméricos</p>
+          {% if form.rfc.errors %}
+          <p class="error-message">{{ form.rfc.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="email">Correo Electrónico *</label>
+          <input id="email" type="email" value="{{ user.email }}" class="form-control" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          {{ form.telefono|add_class:"form-control" }}
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="form-section">
+        <h2><i class="fas fa-map-marker-alt"></i> Dirección</h2>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="calle">Calle *</label>
+            {{ form.calle|add_class:"form-control" }}
+          </div>
+
+          <div class="form-group">
+            <label for="num_ext">Número Ext. *</label>
+            {{ form.num_ext|add_class:"form-control" }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="num_int">Número Int.</label>
+          {{ form.num_int|add_class:"form-control" }}
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="municipio">Alcaldía/Municipio *</label>
+            {{ form.municipio|add_class:"form-control" }}
+          </div>
+
+          <div class="form-group">
+            <label for="codigo_postal">Código Postal *</label>
+            {{ form.codigo_postal|add_class:"form-control" }}
+            {% if form.codigo_postal.errors %}
+            <p class="error-message">{{ form.codigo_postal.errors.0 }}</p>
             {% endif %}
+          </div>
         </div>
-        
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-1">RFC *</label>
-            {{ form.rfc }}
-            <p class="text-xs text-gray-500 mt-1">Formato: 3-4 letras, 6 dígitos y 3 caracteres alfanuméricos</p>
-            {% if form.rfc.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.rfc.errors.0 }}</p>
-            {% endif %}
+
+        <div class="form-group">
+          <label for="referencias">Referencias</label>
+          {{ form.referencias|add_class:"form-control" }}
         </div>
-        
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-1">Correo Electrónico *</label>
-            <input type="email" value="{{ user.email }}" class="w-full p-2 border rounded bg-gray-100" readonly>
-        </div>
-        
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-1">Teléfono</label>
-            {{ form.telefono }}
-        </div>
-        
-        <h2 class="text-xl font-bold mt-6 mb-4 text-green-800 border-b pb-2">Dirección</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Calle *</label>
-                {{ form.calle }}
-            </div>
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Número Ext. *</label>
-                {{ form.num_ext }}
-            </div>
-        </div>
-        
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-1">Número Int.</label>
-            {{ form.num_int }}
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Alcaldía/Municipio *</label>
-                {{ form.municipio }}
-            </div>
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Código Postal *</label>
-                {{ form.codigo_postal }}
-                {% if form.codigo_postal.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.codigo_postal.errors.0 }}</p>
-                {% endif %}
-            </div>
-        </div>
-        
-        <div class="mb-6">
-            <label class="block text-gray-700 font-medium mb-1">Referencias</label>
-            {{ form.referencias }}
-        </div>
-        
-        <div class="flex justify-between mt-6">
-            <a href="{% url 'home_ciudadano' %}" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-6 rounded">
-                Cancelar
-            </a>
-            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded">
-                Guardar Cambios
-            </button>
-        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="form-actions">
+        <a href="{% url 'home_ciudadano' %}" class="btn btn-secondary">
+          Cancelar
+        </a>
+        <button type="submit" class="btn btn-primary">
+          Guardar Cambios
+        </button>
+      </div>
     </form>
+  </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/edit_profile.js' %}"></script>
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-{% comment %} {% extends 'base.html' %}
-{% load static %}
-
-{% block content %}
-<div class="container mx-auto px-4 py-8 max-w-2xl mt-16">
-    <h1 class="text-2xl font-bold mb-6 text-green-800">Editar Perfil Institucional</h1>
-    
-    {% if messages %}
-    <div class="mb-4">
-        {% for message in messages %}
-        <div class="p-3 rounded {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    
-    <form method="POST" class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-        {% csrf_token %}
-        
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-1">Nombre de la Institución *</label>
-            {{ form.nombre_institucion }}
-            {% if form.nombre_institucion.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.nombre_institucion.errors.0 }}</p>
-            {% endif %}
-        </div>
-        
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-1">RFC *</label>
-            {{ form.rfc }}
-            <p class="text-xs text-gray-500 mt-1">Formato: 3-4 letras, 6 dígitos y 3 caracteres alfanuméricos</p>
-            {% if form.rfc.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.rfc.errors.0 }}</p>
-            {% endif %}
-        </div>
-        
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-1">Correo Electrónico *</label>
-            <input type="email" value="{{ user.email }}" class="w-full p-2 border rounded bg-gray-100" readonly>
-        </div>
-        
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-1">Teléfono</label>
-            {{ form.telefono }}
-        </div>
-        
-        <h2 class="text-xl font-bold mt-6 mb-4 text-green-800 border-b pb-2">Dirección</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Calle *</label>
-                {{ form.calle }}
-            </div>
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Número Ext. *</label>
-                {{ form.num_ext }}
-            </div>
-        </div>
-        
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-1">Número Int.</label>
-            {{ form.num_int }}
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Alcaldía/Municipio *</label>
-                {{ form.municipio }}
-            </div>
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Código Postal *</label>
-                {{ form.codigo_postal }}
-                {% if form.codigo_postal.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.codigo_postal.errors.0 }}</p>
-                {% endif %}
-            </div>
-        </div>
-        
-        <div class="mb-6">
-            <label class="block text-gray-700 font-medium mb-1">Referencias</label>
-            {{ form.referencias }}
-        </div>
-        
-        <div class="flex justify-between mt-6">
-            <a href="{% url 'home_ciudadano' %}" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-6 rounded">
-                Cancelar
-            </a>
-            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded">
-                Guardar Cambios
-            </button>
-        </div>
-    </form>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/edit_profile.js' %}"></script>
-{% endblock %} {% endcomment %}
