@@ -1,243 +1,206 @@
-// mapa_register.js - Versión mejorada con autocompletado de CP
+/* =========  VARIABLES GLOBALES  ========= */
+let currentFormType   = "person";   // "person" | "institution"
+let personMap         = null;
+let institutionMap    = null;
+let personMarker      = null;
+let institutionMarker = null;
+const cpCache         = {};
 
-// Variables globales
-let currentFormType = 'person';
-let map = null;
-let marker = null;
-let cpCache = {};
+/* =========  HELPERS  ========= */
+function getActiveMap()    { return currentFormType === "person" ? personMap    : institutionMap; }
+function getActiveMarker() { return currentFormType === "person" ? personMarker : institutionMarker; }
 
-// Inicializar el mapa
-function initMap() {
-    // Coordenadas iniciales (Centro de CDMX)
-    const initialCoords = [19.4326, -99.1332];
-    
-    // Crear el mapa
-    map = L.map('map').setView(initialCoords, 13);
-    
-    // Añadir capa de tiles (OpenStreetMap)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-    
-    // Crear marcador inicial
-    marker = L.marker(initialCoords, {
-        draggable: true,
-        autoPan: true
-    }).addTo(map);
-    
-    // Evento para actualizar coordenadas al hacer clic en el mapa
-    map.on('click', function(e) {
-        updateMarkerPosition(e.latlng);
-        actualizarFormularioDesdeCoords(e.latlng);
-    });
-    
-    // Evento para actualizar coordenadas al arrastrar el marcador
-    marker.on('dragend', function(e) {
-        const newPos = e.target.getLatLng();
-        updateMarkerPosition(newPos);
-        actualizarFormularioDesdeCoords(newPos);
-    });
-    
-    // Establecer coordenadas iniciales en los campos ocultos
-    document.getElementById('latitud').value = initialCoords[0];
-    document.getElementById('longitud').value = initialCoords[1];
+/* =========  INICIALIZAR MAPA  ========= */
+function initMap(type = "person") {
+  const mapId        = type === "person" ? "map-person" : "map-institution";
+  const initialCoords = [19.4326, -99.1332];
+  if ((type === "person" && personMap) || (type === "institution" && institutionMap)) return;
+  const map = L.map(mapId).setView(initialCoords, 13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  const marker = L.marker(initialCoords, { draggable: true, autoPan: true }).addTo(map);
+  if (type === "person") {
+    personMap    = map;
+    personMarker = marker;
+  } else {
+    institutionMap    = map;
+    institutionMarker = marker;
+  }
+  map.on("click",   (e) => { updateMarkerPosition(e.latlng, type);   actualizarFormularioDesdeCoords(e.latlng); });
+  marker.on("dragend", (e) => { const p = e.target.getLatLng(); updateMarkerPosition(p, type); actualizarFormularioDesdeCoords(p); });
+  updateMarkerPosition({ lat: initialCoords[0], lng: initialCoords[1] }, type);
 }
 
-// Actualizar posición del marcador y campos ocultos
-function updateMarkerPosition(latlng) {
-    marker.setLatLng(latlng);
-    document.getElementById('latitud').value = latlng.lat;
-    document.getElementById('longitud').value = latlng.lng;
-    
-    // Opcional: Hacer zoom más cercano al seleccionar ubicación
-    if (map.getZoom() < 16) {
-        map.setZoom(16);
-    }
+/* =========  ACTUALIZAR MARCADOR & INPUTS  ========= */
+// function updateMarkerPosition(latlng, type) {
+//   const mk = type === "person" ? personMarker : institutionMarker;
+//   if (mk) mk.setLatLng(latlng);
+
+//   if (type === "person") {
+//     document.getElementById("person-latitud" ).value = latlng.lat.toFixed(8);
+//     document.getElementById("person-longitud").value = latlng.lng.toFixed(8);
+//   } else {
+//     document.getElementById("institution-latitud" ).value = latlng.lat.toFixed(8);
+//     document.getElementById("institution-longitud").value = latlng.lng.toFixed(8);
+//   }
+// }
+function updateMarkerPosition(latlng, type) {
+  const mk = type === "person" ? personMarker : institutionMarker;
+  if (mk) mk.setLatLng(latlng);
+  const prefix = type === "person" ? "person" : "institution";
+  document.getElementById(`${prefix}-latitud`).value = latlng.lat.toFixed(8);
+  document.getElementById(`${prefix}-longitud`).value = latlng.lng.toFixed(8);
 }
 
-// Función para actualizar el formulario cuando se mueve el marcador
+/* =========  REVERSE GEOCODING  ========= */
+// function actualizarFormularioDesdeCoords(latlng) {
+//   fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latlng.lat}&lon=${latlng.lng}`)
+//     .then(r => r.json())
+//     .then(data => { if (data.address) actualizarCamposDesdeDireccion(data.address); })
+//     .catch(err => console.error("Error reverse geocoding:", err));
+// }
 function actualizarFormularioDesdeCoords(latlng) {
-    document.getElementById('latitud').value = latlng.lat;
-    document.getElementById('longitud').value = latlng.lng;
-    
-    // Usar Nominatim para obtener la dirección inversa
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latlng.lat}&lon=${latlng.lng}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.address) {
-                actualizarCamposDesdeDireccion(data.address);
-            }
-        })
-        .catch(error => {
-            console.error('Error al obtener dirección inversa:', error);
-        });
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latlng.lat}&lon=${latlng.lng}`)
+    .then(r => r.json())
+    .then(data => { 
+      if (data.address) {
+        actualizarCamposDesdeDireccion(data.address, currentFormType);
+      }
+    })
+    .catch(err => console.error("Error reverse geocoding:", err));
+}
+// function actualizarCamposDesdeDireccion(address) {
+//   const cpInput    = document.getElementById("codigo_postal");
+//   const calleInput = document.getElementById("calle");
+
+//   if (address.postcode && cpInput && (!cpInput.value || cpInput.value.length !== 5)) {
+//     cpInput.value = address.postcode;
+//     buscarCodigoPostal(address.postcode);
+//   }
+//   if (calleInput && !calleInput.value && address.road) {
+//     calleInput.value = address.road;
+//   }
+// }
+function actualizarCamposDesdeDireccion(address, formType) {
+  const formPrefix = formType === "person" ? "person" : "institution";
+  const cpInput = document.getElementById(`${formPrefix}-codigo_postal`);
+  const calleInput = document.getElementById(`${formPrefix}-calle`);
+
+  if (address.postcode && cpInput && (!cpInput.value || cpInput.value.length !== 5)) {
+    cpInput.value = address.postcode;
+    buscarCodigoPostal(address.postcode, formType);
+  }
+  if (calleInput && !calleInput.value && address.road) {
+    calleInput.value = address.road;
+  }
 }
 
-// Función para actualizar campos del formulario con datos de dirección
-function actualizarCamposDesdeDireccion(address) {
-    const cpInput = document.getElementById('codigo_postal');
-    const calleInput = document.getElementById('calle');
-    
-    // Actualizar código postal si está disponible y no está ya lleno
-    if (address.postcode && cpInput && (!cpInput.value || cpInput.value.length !== 5)) {
-        cpInput.value = address.postcode;
-        buscarCodigoPostal(address.postcode);
+/* =========  BÚSQUEDA DE CÓDIGO POSTAL  ========= */
+// async function buscarCodigoPostal(cp) {
+//   if (!/^\d{5}$/.test(cp)) return;
+//   const loadingEl   = document.getElementById("cp-loading");
+//   const municipioIn = document.getElementById("municipio");
+//   const coloniaSel  = document.getElementById("colonia");
+async function buscarCodigoPostal(cp, formType) {
+  if (!/^\d{5}$/.test(cp)) return;
+  
+  const formPrefix = formType === "person" ? "person" : "institution";
+  const loadingEl = document.getElementById(`${formPrefix}-cp-loading`);
+  const municipioIn = document.getElementById(`${formPrefix}-municipio`);
+  const coloniaSel = document.getElementById(`${formPrefix}-colonia`);
+
+  if (loadingEl) loadingEl.classList.remove("hidden");
+  if (cpCache[cp]) {
+    llenarDatos(cpCache[cp]);
+    if (loadingEl) loadingEl.classList.add("hidden");
+    return;
+  }
+  try {
+    const resp = await fetch(`https://sepomex.icalialabs.com/api/v1/zip_codes?zip_code=${cp}`);
+    if (!resp.ok) throw new Error(resp.statusText);
+    const data = await resp.json();
+    cpCache[cp] = data.zip_codes;
+    llenarDatos(cpCache[cp]);
+    if (data.zip_codes[0]?.d_cp) actualizarMapaDesdeCP(data.zip_codes[0].d_cp);
+  } catch (err) {
+    console.error("CP fetch error:", err);
+    alert("No se pudo obtener la información del código postal");
+  } finally {
+    if (loadingEl) loadingEl.classList.add("hidden");
+  }
+  function llenarDatos(arr) {
+    if (!arr.length) return alert("No se encontraron datos para este código postal");
+    municipioIn.value = arr[0].d_mnpio || "";
+    coloniaSel.innerHTML = "";
+    if (arr.length === 1) agregarOpcion(arr[0]);
+    else {
+      coloniaSel.appendChild(crearOptionDefault());
+      arr.sort((a,b) => a.d_asenta.localeCompare(b.d_asenta)).forEach(agregarOpcion);
     }
-    
-    // Actualizar calle si está disponible y no está ya llena
-    if (calleInput && !calleInput.value && address.road) {
-        calleInput.value = address.road;
-    }
+    coloniaSel.disabled = false;
+  }
+  function agregarOpcion(item) {
+    const opt = document.createElement("option");
+    opt.value = item.d_asenta;
+    opt.textContent = `${item.d_asenta} (${item.d_tipo_asenta})`;
+    coloniaSel.appendChild(opt);
+  }
+  function crearOptionDefault() {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "-- Selecciona una colonia --";
+    opt.selected = true;
+    return opt;
+  }
+  function actualizarMapaDesdeCP(cpVal) {
+    fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cpVal}&country=Mexico&format=json`)
+      .then(r => r.json())
+      .then(d => {
+        if (!d[0]) return;
+        const { lat, lon } = d[0];
+        const actMap    = getActiveMap();
+        const actMarker = getActiveMarker();
+        if (actMap && actMarker) {
+          actMap.setView([lat, lon], 16);
+          actMarker.setLatLng([lat, lon]);
+          updateMarkerPosition({ lat: parseFloat(lat), lng: parseFloat(lon) }, currentFormType);
+        }
+      });
+  }
 }
 
-// Función para manejar la búsqueda de código postal
-async function buscarCodigoPostal(cp) {
-    if (cp.length !== 5 || !/^\d{5}$/.test(cp)) {
-        return;
-    }
-
-    const loadingElement = document.getElementById('cp-loading');
-    const municipioInput = document.getElementById('municipio');
-    const coloniaSelect = document.getElementById('colonia');
-
-    // Mostrar loading
-    if (loadingElement) loadingElement.classList.remove('hidden');
-
-    if (cpCache[cp]) {
-        llenarDatos(cpCache[cp]);
-        if (loadingElement) loadingElement.classList.add('hidden');
-        return;
-    }
-
-    try {
-        const response = await fetch(`https://sepomex.icalialabs.com/api/v1/zip_codes?zip_code=${cp}`);
-        if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-        const data = await response.json();
-
-        const zipCodes = data.zip_codes;
-        cpCache[cp] = zipCodes;
-
-        llenarDatos(zipCodes);
-
-        if (zipCodes[0]?.d_cp) {
-            actualizarMapaDesdeCP(zipCodes[0].d_cp);
-        }
-
-    } catch (error) {
-        console.error('Error al buscar código postal:', error);
-        mostrarError('No se pudo obtener la información del código postal');
-    } finally {
-        if (loadingElement) loadingElement.classList.add('hidden');
-    }
-
-    function llenarDatos(datos) {
-        if (!datos?.length) {
-            mostrarError('No se encontraron datos para este código postal');
-            return;
-        }
-
-        municipioInput.value = datos[0].d_mnpio || '';
-
-        coloniaSelect.innerHTML = '';
-        if (datos.length === 1) {
-            agregarOpcionColonia(datos[0]);
-        } else {
-            coloniaSelect.appendChild(crearOptionDefault());
-            datos.sort((a, b) => a.d_asenta.localeCompare(b.d_asenta))
-                .forEach(agregarOpcionColonia);
-        }
-        coloniaSelect.disabled = false;
-    }
-
-    function agregarOpcionColonia(item) {
-        const option = document.createElement('option');
-        option.value = item.d_asenta;
-        option.textContent = `${item.d_asenta} (${item.d_tipo_asenta})`;
-        coloniaSelect.appendChild(option);
-    }
-
-    function crearOptionDefault() {
-        const option = document.createElement('option');
-        option.value = '';
-        option.textContent = '-- Selecciona una colonia --';
-        option.selected = true;
-        return option;
-    }
-
-    function mostrarError(mensaje) {
-        // Puedes personalizar este mensaje visualmente
-        alert(mensaje);
-    }
-
-    function actualizarMapaDesdeCP(cp) {
-        fetch(`https://nominatim.openstreetmap.org/search?postalcode=${cp}&country=Mexico&format=json`)
-            .then(res => res.json())
-            .then(data => {
-                if (data[0]) {
-                    const { lat, lon } = data[0];
-                    if (map && marker) {
-                        map.setView([lat, lon], 16);
-                        marker.setLatLng([lat, lon]);
-                        updateMarkerPosition({lat, lng: lon});
-                    }
-                }
-            });
-    }
-}
-
-// Función para toggle entre tipos de registro (se mantiene igual)
+/* =========  TOGGLE ENTRE FORMULARIOS  ========= */
 function toggleRegisterType(type) {
-    currentFormType = type;
-    
-    const personTab = document.getElementById('person-tab');
-    const institutionTab = document.getElementById('institution-tab');
-    const personForm = document.getElementById('person-form');
-    const institutionForm = document.getElementById('institution-form');
-    
-    personTab.classList.remove('active');
-    personTab.classList.add('inactive');
-    institutionTab.classList.remove('active');
-    institutionTab.classList.add('inactive');
-    
-    personForm.classList.add('hidden');
-    institutionForm.classList.add('hidden');
-    
-    if (type === 'person') {
-        personTab.classList.remove('inactive');
-        personTab.classList.add('active');
-        personForm.classList.remove('hidden');
-    } else if (type === 'institution') {
-        institutionTab.classList.remove('inactive');
-        institutionTab.classList.add('active');
-        institutionForm.classList.remove('hidden');
-    }
-    
-    if (map) {
-        setTimeout(() => {
-            map.invalidateSize();
-        }, 350);
-    }
+  currentFormType = type;
+
+  const personTab  = document.getElementById("person-tab");
+  const instTab    = document.getElementById("institution-tab");
+  const personForm = document.getElementById("person-form");
+  const instForm   = document.getElementById("institution-form");
+
+  if (type === "person") {
+    personTab.classList.add("active");       instTab.classList.remove("active");
+    personForm.classList.remove("hidden");   instForm.classList.add("hidden");
+    setTimeout(() => {
+      if (!personMap) initMap("person");
+      else personMap.invalidateSize();
+    }, 50);
+  } else {
+    personTab.classList.remove("active");    instTab.classList.add("active");
+    personForm.classList.add("hidden");      instForm.classList.remove("hidden");
+    setTimeout(() => {
+      if (!institutionMap) initMap("institution");
+      else institutionMap.invalidateSize();
+    }, 50);
+  }
 }
 
-// Eventos del DOM
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar el mapa
-    initMap();
-    
-    // Evento para el código postal
-    const cpInput = document.getElementById('codigo_postal');
-    if (cpInput) {
-        cpInput.addEventListener('input', function() {
-            buscarCodigoPostal(this.value);
-        });
-    }
-    
-    // Eventos para el toggle
-    document.getElementById('person-tab').addEventListener('click', function() {
-        toggleRegisterType('person');
-    });
-    
-    document.getElementById('institution-tab').addEventListener('click', function() {
-        toggleRegisterType('institution');
-    });
+/* =========  EVENTOS DOM (ÚNICO LISTENER) ========= */
+document.addEventListener("DOMContentLoaded", () => {
+  initMap("person");
+  const cpInput = document.getElementById("codigo_postal");
+  if (cpInput) cpInput.addEventListener("input", () => buscarCodigoPostal(cpInput.value));
+  document.getElementById("person-tab")     .addEventListener("click", () => toggleRegisterType("person"));
+  document.getElementById("institution-tab").addEventListener("click", () => toggleRegisterType("institution"));
 });

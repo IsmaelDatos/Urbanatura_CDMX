@@ -1,18 +1,23 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Usuario
 from django.core.validators import RegexValidator
+from .models import Usuario
+
+
 
 class CiudadanoRegistrationForm(UserCreationForm):
     password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirmar contraseña', widget=forms.PasswordInput)
-    
+    latitud = forms.DecimalField(required=False, widget=forms.HiddenInput())
+    longitud = forms.DecimalField(required=False, widget=forms.HiddenInput())
     class Meta:
         model = Usuario
-        fields = ['email', 'first_name', 'primer_apellido', 'segundo_apellido', 
-                  'calle', 'num_ext', 'num_int', 'entidad_federativa', 
-                  'municipio', 'codigo_postal', 'referencias']
-        
+        fields = [
+            'email', 'first_name', 'primer_apellido', 'segundo_apellido',
+            'calle', 'num_ext', 'num_int', 'entidad_federativa',
+            'municipio', 'codigo_postal', 'referencias',
+            'latitud', 'longitud',
+        ]
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].widget.attrs.update({'autofocus': False})
@@ -20,11 +25,15 @@ class CiudadanoRegistrationForm(UserCreationForm):
         self.fields['primer_apellido'].required = True
         self.fields['codigo_postal'].validators = [
             RegexValidator(
-                regex='^[0-9]{5}$',
+                regex=r'^\d{5}$',
                 message='El código postal debe tener 5 dígitos'
             )
         ]
-    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if Usuario.objects.filter(username=email).exists():
+            raise forms.ValidationError("Este correo electrónico ya está registrado")
+        return email
     def save(self, commit=True):
         user = super().save(commit=False)
         user.tipo_usuario = 'CIUDADANO'
@@ -45,13 +54,17 @@ class InstitucionRegistrationForm(UserCreationForm):
             )
         ]
     )
-    
+    latitud = forms.DecimalField(required=False, widget=forms.HiddenInput())
+    longitud = forms.DecimalField(required=False, widget=forms.HiddenInput())
     class Meta:
         model = Usuario
-        fields = ['nombre_institucion', 'rfc', 'email', 
-                  'calle', 'num_ext', 'num_int', 'entidad_federativa', 
-                  'municipio', 'codigo_postal', 'referencias']
-        
+        fields = [
+            'nombre_institucion', 'rfc', 'email',
+            'calle', 'num_ext', 'num_int', 'entidad_federativa',
+            'municipio', 'codigo_postal', 'referencias',
+            'latitud', 'longitud'
+        ]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].widget.attrs.update({'autofocus': False})
@@ -61,7 +74,7 @@ class InstitucionRegistrationForm(UserCreationForm):
                 message='El código postal debe tener 5 dígitos'
             )
         ]
-    
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.tipo_usuario = 'INSTITUCION'
@@ -93,20 +106,27 @@ class CiudadanoEditForm(forms.ModelForm):
 class InstitucionEditForm(forms.ModelForm):
     class Meta:
         model = Usuario
-        fields = ['nombre_institucion', 'rfc', 'telefono',
-                 'calle', 'num_ext', 'num_int', 'municipio', 'codigo_postal', 'referencias']
+        fields = [
+            'nombre_institucion', 'rfc', 'telefono',
+            'calle', 'num_ext', 'num_int', 'municipio',
+            'codigo_postal', 'referencias'
+        ]
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['nombre_institucion'].required = True
+        self.fields['rfc'].required = True
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})
         self.fields['rfc'].validators = [
             RegexValidator(
-                regex='^[A-Z&Ñ]{3,4}[0-9]{6}[A-Z0-9]{3}$',
+                regex=r'^[A-Z&Ñ]{3,4}[0-9]{6}[A-Z0-9]{3}$',
                 message='El RFC no tiene un formato válido'
             )
         ]
         self.fields['codigo_postal'].validators = [
             RegexValidator(
-                regex='^[0-9]{5}$',
+                regex=r'^[0-9]{5}$',
                 message='El código postal debe tener 5 dígitos'
             )
         ]

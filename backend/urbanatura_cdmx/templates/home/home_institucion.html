@@ -15,12 +15,13 @@
         <h1>Bienvenido Institución</h1>
         <p>Esta es tu página de perfil como institución.</p>
         <div class="institution-info">
-            <p>Nombre: {{ user.nombre_institucion }}</p>
-            <p>RFC: {{ user.rfc }}</p>
-            <p>Email: {{ user.email }}</p>
-            <p>Dirección: {{ user.calle }} {{ user.num_ext }}, {{ user.colonia }}, {{ user.municipio }}</p>
-            <a href="{% url 'usuarios:edit_ciudadano' %}" class="text-blue-600 hover:text-blue-800">
-        <i class="fas fa-edit mr-1"></i>Editar Perfil</a>
+            <p>Nombre: {{ institucion.nombre_institucion }}</p>
+            <p>RFC: {{ institucion.rfc }}</p>
+            <p>Email: {{ institucion.email }}</p>
+            <p>Dirección: {{ institucion.calle }} {{ institucion.num_ext }}{% if institucion.num_int %}, Int. {{ institucion.num_int }}{% endif %}, {{ institucion.municipio }}</p>
+            <a href="{% url 'usuarios:edit_institucion' %}" class="text-indigo-600 hover:text-indigo-900">
+                <i class="fas fa-edit mr-1"></i>Editar Perfil
+            </a>
         </div>
     </main>
 </body>

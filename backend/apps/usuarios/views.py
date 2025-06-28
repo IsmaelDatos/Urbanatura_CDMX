@@ -1,73 +1,61 @@
-from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from .forms import CiudadanoRegistrationForm, InstitucionRegistrationForm, LoginForm, CiudadanoEditForm, InstitucionEditForm
-from django.http import HttpResponseNotAllowed
-from django.conf import settings
+from django.http import JsonResponse, HttpResponseNotAllowed
+from django.shortcuts import render, redirect, reverse
+from django.views.decorators.http import require_http_methods
 from django.contrib import messages
+from .forms import CiudadanoRegistrationForm, InstitucionRegistrationForm, LoginForm, CiudadanoEditForm, InstitucionEditForm
+from django.conf import settings
+from django.db import IntegrityError
 
-def register_ciudadano(request):
-    if request.method == 'GET':
-        # Eliminar la verificación del template que causa problemas
-        return render(request, 'registration/register.html', {
-            'form': CiudadanoRegistrationForm(),
-            'STATIC_URL': settings.STATIC_URL
-        })
-    
-    elif request.method == 'POST':
-        try:
-            form = CiudadanoRegistrationForm(request.POST)
-            if form.is_valid():
-                user = form.save()
-                login(request, user)
-                return JsonResponse({
-                    'success': True,
-                    'redirect_url': '/'
-                })
-            
-            errors = {}
-            for field, error_list in form.errors.items():
-                errors[field] = error_list[0] if error_list else 'Error desconocido'
-            
-            return JsonResponse({
-                'success': False,
-                'errors': errors
-            }, status=400)
-            
-        except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'error': str(e)
-            }, status=500)
-    
-    return HttpResponseNotAllowed(['GET', 'POST'])
-
-def register_institucion(request):
-    if request.method == 'GET':
-        return render(request, 'registration/register_institucion.html', {
-            'form': InstitucionRegistrationForm()
-        })
-    
-    elif request.method == 'POST':
-        form = InstitucionRegistrationForm(request.POST)
+def _register(request, form_class, template_name, tipo_usuario):
+    if request.method == "POST":
+        form = form_class(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return JsonResponse({
-                'success': True,
-                'message': 'Registro exitoso como institución',
-                'redirect_url': '/'
-            })
-        else:
-            errors = {field: error[0] for field, error in form.errors.items()}
-            return JsonResponse({
-                'success': False,
-                'error': 'Datos inválidos',
-                'errors': errors
-            }, status=400)
-    
-    return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
+            try:
+                user = form.save(commit=False)
+                user.latitud = form.cleaned_data.get("latitud")
+                user.longitud = form.cleaned_data.get("longitud")
+                user.tipo_usuario = tipo_usuario
+                user.save()
+                login(request, user)
+                redirect_url = (
+                    reverse("home_ciudadano")
+                    if tipo_usuario == "CIUDADANO"
+                    else reverse("home_institucion")
+                )
+                return redirect(redirect_url)
+            except IntegrityError:
+                form.add_error("email", "Este correo electrónico ya está registrado")
+        return render(
+            request,
+            template_name,
+            {
+                "form": form,
+                "preserve_data": True,
+            },
+        )
+    return render(request, template_name, {"form": form_class()})
+
+@require_http_methods(["GET", "POST"])
+def register_ciudadano(request):
+    """Registro de ciudadanos."""
+    return _register(
+        request,
+        form_class=CiudadanoRegistrationForm,
+        template_name="registration/register.html",
+        tipo_usuario="CIUDADANO",
+    )
+
+@require_http_methods(["GET", "POST"])
+def register_institucion(request):
+    """Registro de instituciones."""
+    return _register(
+        request,
+        form_class=InstitucionRegistrationForm,
+        template_name="registration/register.html",
+        tipo_usuario="INSTITUCION",
+    )
 
 def user_login(request):
     if request.method == 'GET':
@@ -111,7 +99,9 @@ def home_ciudadano(request):
 
 @login_required
 def home_institucion(request):
-    return render(request, 'home/home_institucion.html')
+    return render(request, 'home/home_institucion.html', {
+        'institucion': request.user
+    })
 
 @login_required
 def edit_ciudadano(request):
@@ -132,7 +122,6 @@ def edit_ciudadano(request):
     
     return render(request, 'usuarios/edit_ciudadano.html', {'form': form})
 
-
 @login_required
 def edit_institucion(request):
     if request.method == 'POST':
@@ -140,15 +129,7 @@ def edit_institucion(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Perfil institucional actualizado correctamente')
-            
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': True,
-                    'redirect_url': reverse('home_institucion')
-                })
             return redirect('home_institucion')
-        else:
-            messages.error(request, 'Por favor corrige los errores en el formulario')
     else:
         form = InstitucionEditForm(instance=request.user)
     
@@ -156,14 +137,3 @@ def edit_institucion(request):
         'form': form,
         'STATIC_URL': settings.STATIC_URL
     })
-    if request.method == 'POST':
-        form = InstitucionEditForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Perfil institucional actualizado correctamente')
-            return redirect('usuarios:edit_institucion')
-    else:
-        form = InstitucionEditForm(instance=request.user)
-    
-    return render(request, 'usuarios/edit_institucion.html', {'form': form})
-

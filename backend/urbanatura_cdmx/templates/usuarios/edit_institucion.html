@@ -19,6 +19,123 @@
 
       {# Mensajes flash #}
       {% if messages %}
+        <div class="mb-6">
+          {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Información de la institución -->
+      <div class="form-section">
+        <h2><i class="fas fa-building"></i> Información de la Institución</h2>
+
+        <div class="form-group">
+          <label for="{{ form.nombre_institucion.id_for_label }}">Nombre de la Institución *</label>
+          {{ form.nombre_institucion }}
+          {% if form.nombre_institucion.errors %}
+            <p class="error-message">{{ form.nombre_institucion.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div class="form-group rfc-field">
+          <label for="{{ form.rfc.id_for_label }}">RFC *</label>
+          {{ form.rfc }}
+          <p class="rfc-hint">Formato: 3-4 letras, 6 dígitos y 3 caracteres alfanuméricos</p>
+          {% if form.rfc.errors %}
+            <p class="error-message">{{ form.rfc.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="email">Correo Electrónico *</label>
+          <input id="email" type="email" value="{{ user.email }}" class="form-control" readonly>
+        </div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="form-section">
+        <h2><i class="fas fa-map-marker-alt"></i> Dirección</h2>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="{{ form.calle.id_for_label }}">Calle *</label>
+            {{ form.calle }}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.num_ext.id_for_label }}">Número Ext. *</label>
+            {{ form.num_ext }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.num_int.id_for_label }}">Número Int.</label>
+          {{ form.num_int }}
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="{{ form.municipio.id_for_label }}">Alcaldía/Municipio *</label>
+            {{ form.municipio }}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.codigo_postal.id_for_label }}">Código Postal *</label>
+            {{ form.codigo_postal }}
+            {% if form.codigo_postal.errors %}
+              <p class="error-message">{{ form.codigo_postal.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.referencias.id_for_label }}">Referencias</label>
+          {{ form.referencias }}
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="form-actions">
+        <a href="{% url 'home_ciudadano' %}" class="btn btn-secondary">
+          Cancelar
+        </a>
+        <button type="submit" class="btn btn-primary">
+          Guardar Cambios
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/edit_profile.js' %}"></script>
+{% endblock %}
+
+{% comment %} {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="edit-profile-container">
+  <div class="edit-profile-card">
+    <!-- Cabecera -->
+    <div class="edit-profile-header">
+      <h1>Editar Perfil Institucional</h1>
+    </div>
+
+    <!-- Formulario -->
+    <form method="POST" class="edit-profile-form">
+      {% csrf_token %}
+
+      {# Mensajes flash #}
+      {% if messages %}
       <div class="mb-6">
         {% for message in messages %}
         <div class="alert {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
@@ -55,8 +172,11 @@
         </div>
 
         <div class="form-group">
-          <label for="telefono">Teléfono</label>
-          {{ form.telefono|add_class:"form-control" }}
+            <label for="nombre_institucion">Nombre de la Institución *</label>
+            {{ form.nombre_institucion }}
+            {% if form.nombre_institucion.errors %}
+            <p class="error-message">{{ form.nombre_institucion.errors.0 }}</p>
+            {% endif %}
         </div>
       </div>
 
@@ -118,4 +238,4 @@
 
 {% block extra_js %}
 <script src="{% static 'js/edit_profile.js' %}"></script>
-{% endblock %}
+{% endblock %} {% endcomment %}

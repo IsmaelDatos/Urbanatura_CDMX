@@ -1,85 +1,71 @@
-// Funciones para los toggle switches
-function toggleRegisterType(type) {
-  const personTab = document.getElementById('person-tab');
-  const institutionTab = document.getElementById('institution-tab');
-  const personForm = document.getElementById('person-form');
-  const institutionForm = document.getElementById('institution-form');
+// --- VALIDACIÓN DE CONTRASEÑAS ---
+function verificarPasswords(form) {
+  const formId = form.id;
+  const password1 = form.password1;
+  const password2 = form.password2;
+  const errorField = formId === "person-form" ? "password2" : "institution-password2";
+  let errorElement = document.getElementById(`${errorField}-error`);
 
-  if (type === 'person') {
-    personTab.classList.add('active');
-    institutionTab.classList.remove('active');
-    personForm.classList.remove('hidden');
-    institutionForm.classList.add('hidden');
+  // Elimina errores previos si existen y las contraseñas ahora coinciden
+  if (password1.value === password2.value) {
+    if (errorElement) {
+      errorElement.classList.add("hidden");
+    }
+    password1.classList.remove("border-red-500");
+    password2.classList.remove("border-red-500");
+    return true;
+  }
+
+  // Si no coinciden, muestra el error
+  if (!errorElement) {
+    errorElement = document.createElement("div");
+    errorElement.id = `${errorField}-error`;
+    errorElement.className = "error-message text-red-500 text-xs mt-1 flex items-center";
+    errorElement.innerHTML =
+      `<i class="fas fa-exclamation-circle mr-1"></i><span>Las contraseñas no coinciden</span>`;
+    password2.parentNode.appendChild(errorElement);
   } else {
-    personTab.classList.remove('active');
-    institutionTab.classList.add('active');
-    personForm.classList.add('hidden');
-    institutionForm.classList.remove('hidden');
+    errorElement.classList.remove("hidden");
+    errorElement.innerHTML =
+      `<i class="fas fa-exclamation-circle mr-1"></i><span>Las contraseñas no coinciden</span>`;
+  }
+
+  password1.classList.add("border-red-500");
+  password2.classList.add("border-red-500");
+  return false;
+}
+
+// --- OJITO PARA MOSTRAR/OCULTAR CONTRASEÑA ---
+function togglePasswordVisibility(btn, inputId) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  if (input.type === "password") {
+    input.type = "text";
+    btn.classList.remove("fa-eye");
+    btn.classList.add("fa-eye-slash");
+  } else {
+    input.type = "password";
+    btn.classList.remove("fa-eye-slash");
+    btn.classList.add("fa-eye");
   }
 }
 
-function submitForm(form) {
-  const formData = new FormData(form);
-  
-  // Limpiar errores previos
-  document.querySelectorAll('.error-message').forEach(el => {
-    el.classList.add('hidden');
-    el.textContent = '';
-  });
-  
-  fetch(form.action, {
-    method: 'POST',
-    body: formData,
-    headers: {
-      'X-Requested-With': 'XMLHttpRequest',
-      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-    }
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      window.location.href = data.redirect_url || "/arbol/inicio/";
-    } else {
-      // Mostrar errores de validación
-      if (data.errors) {
-        for (const [field, error] of Object.entries(data.errors)) {
-          const errorElement = document.getElementById(`${form.id}-${field}-error`) || 
-                             document.getElementById(`${field}-error`);
-          if (errorElement) {
-            errorElement.textContent = error;
-            errorElement.classList.remove('hidden');
-          } else {
-            console.error(`No se encontró elemento para error: ${field}`);
-          }
+// --- EVENTOS PARA VALIDACIÓN EN TIEMPO REAL ---
+document.addEventListener("DOMContentLoaded", () => {
+  ["person-form", "institution-form"].forEach(formId => {
+    const form = document.getElementById(formId);
+    if (form) {
+      form.password1.addEventListener("input", () => verificarPasswords(form));
+      form.password2.addEventListener("input", () => verificarPasswords(form));
+      form.addEventListener("submit", function(e) {
+        if (!verificarPasswords(form)) {
+          e.preventDefault();
+        } else {
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+          const formData = new FormData(form);
+          formData.append('csrfmiddlewaretoken', csrfToken);
         }
-      } else {
-        alert('Error: ' + (data.error || 'Datos inválidos'));
-      }
+      });
     }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('Error al conectar con el servidor');
   });
-}
-
-// Configuración del envío de formularios
-document.addEventListener('DOMContentLoaded', function() {
-  // Configuración para el formulario de persona
-  const personForm = document.getElementById('person-form');
-  if (personForm) {
-    personForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      submitForm(personForm);
-    });
-  }
-
-  // Configuración para el formulario de institución
-  const institutionForm = document.getElementById('institution-form');
-  if (institutionForm) {
-    institutionForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      submitForm(institutionForm);
-    });
-  }
 });
