@@ -2,12 +2,9 @@ from django.core.exceptions import ValidationError
 from django import forms
 from .models import Arbol
 class ArbolForm(forms.ModelForm):
-    # ---------- validaciones personalizadas ----------
     def validate_image_size(value):
         if value and value.size > 5 * 1024 * 1024:
             raise forms.ValidationError("El tamaño máximo de la imagen es 5 MB")
-
-    # ---------- campos adicionales (no están en el modelo) ----------
     foto1 = forms.ImageField(
         validators=[validate_image_size],
         required=True,
@@ -47,12 +44,9 @@ class ArbolForm(forms.ModelForm):
             "diametro_copa": forms.NumberInput(attrs={"step": "0.01"}),
         }
 
-    # ---------- inicialización ----------
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request", None)
         super().__init__(*args, **kwargs)
-
-        # Valores por defecto para campos de solo lectura
         defaults = {
             "entidad_federativa": "CDMX",
             "nombre_cientifico": "",
@@ -61,7 +55,6 @@ class ArbolForm(forms.ModelForm):
             if field in self.fields and not self.initial.get(field):
                 self.fields[field].initial = value
 
-    # ---------- limpiezas ----------
     def clean_estructura_general(self):
         return self.cleaned_data.get("estructura_general", [])
 
@@ -76,8 +69,7 @@ class ArbolForm(forms.ModelForm):
         if altura <= 0 or altura > 50:
             raise forms.ValidationError("La altura debe estar entre 0 y 50 metros")
         return altura
-
-    # ---------- guardado ----------
+    
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.municipio_alcaldia = self.cleaned_data.get("alcaldia")

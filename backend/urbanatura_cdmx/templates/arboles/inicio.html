@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="{% static 'css/inicio.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- Folium CSS/JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </head>
@@ -24,9 +23,8 @@
         
         <div class="mapa-container">
             <h2>Mapa del Arbolado</h2>
-            <div class="mapa" style="height: 500px; width: 100%;">
-                {{ map_html|safe }}
-            </div>
+            <!-- Cambia el div para tener un ID en lugar de clase -->
+            <div id="mapa" style="height: 500px; width: 100%;"></div>
         </div>
         
         <div class="botones">
@@ -34,5 +32,8 @@
             <a href="{% url 'arbol:lista_arboles' %}" class="btn">Ver Lista Completa</a>
         </div>
     </main>
+
+    <!-- Añade tu script al final del body -->
+    <script src="{% static 'js/mapa_inicio.js' %}"></script>
 </body>
 </html>
