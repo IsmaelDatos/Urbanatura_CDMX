@@ -33,18 +33,6 @@ function initMap(type = "person") {
 }
 
 /* =========  ACTUALIZAR MARCADOR & INPUTS  ========= */
-// function updateMarkerPosition(latlng, type) {
-//   const mk = type === "person" ? personMarker : institutionMarker;
-//   if (mk) mk.setLatLng(latlng);
-
-//   if (type === "person") {
-//     document.getElementById("person-latitud" ).value = latlng.lat.toFixed(8);
-//     document.getElementById("person-longitud").value = latlng.lng.toFixed(8);
-//   } else {
-//     document.getElementById("institution-latitud" ).value = latlng.lat.toFixed(8);
-//     document.getElementById("institution-longitud").value = latlng.lng.toFixed(8);
-//   }
-// }
 function updateMarkerPosition(latlng, type) {
   const mk = type === "person" ? personMarker : institutionMarker;
   if (mk) mk.setLatLng(latlng);
@@ -54,12 +42,6 @@ function updateMarkerPosition(latlng, type) {
 }
 
 /* =========  REVERSE GEOCODING  ========= */
-// function actualizarFormularioDesdeCoords(latlng) {
-//   fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latlng.lat}&lon=${latlng.lng}`)
-//     .then(r => r.json())
-//     .then(data => { if (data.address) actualizarCamposDesdeDireccion(data.address); })
-//     .catch(err => console.error("Error reverse geocoding:", err));
-// }
 function actualizarFormularioDesdeCoords(latlng) {
   fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latlng.lat}&lon=${latlng.lng}`)
     .then(r => r.json())
@@ -70,18 +52,6 @@ function actualizarFormularioDesdeCoords(latlng) {
     })
     .catch(err => console.error("Error reverse geocoding:", err));
 }
-// function actualizarCamposDesdeDireccion(address) {
-//   const cpInput    = document.getElementById("codigo_postal");
-//   const calleInput = document.getElementById("calle");
-
-//   if (address.postcode && cpInput && (!cpInput.value || cpInput.value.length !== 5)) {
-//     cpInput.value = address.postcode;
-//     buscarCodigoPostal(address.postcode);
-//   }
-//   if (calleInput && !calleInput.value && address.road) {
-//     calleInput.value = address.road;
-//   }
-// }
 function actualizarCamposDesdeDireccion(address, formType) {
   const formPrefix = formType === "person" ? "person" : "institution";
   const cpInput = document.getElementById(`${formPrefix}-codigo_postal`);
@@ -97,11 +67,6 @@ function actualizarCamposDesdeDireccion(address, formType) {
 }
 
 /* =========  BÚSQUEDA DE CÓDIGO POSTAL  ========= */
-// async function buscarCodigoPostal(cp) {
-//   if (!/^\d{5}$/.test(cp)) return;
-//   const loadingEl   = document.getElementById("cp-loading");
-//   const municipioIn = document.getElementById("municipio");
-//   const coloniaSel  = document.getElementById("colonia");
 async function buscarCodigoPostal(cp, formType) {
   if (!/^\d{5}$/.test(cp)) return;
   

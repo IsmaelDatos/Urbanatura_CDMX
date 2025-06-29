@@ -23,8 +23,13 @@
           </svg>
         </div>
         <h3 class="text-lg font-medium text-gray-900 mb-2">¡Éxito!</h3>
-        <p class="text-gray-500 mb-4">Gracias por registrar el árbol. La información ha sido guardada.</p>
-        <button id="modalOkButton" type="button" class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors">
+        <p class="text-gray-500 mb-4">
+          Gracias por registrar el árbol. La información ha sido guardada.
+        </p>
+        <button id="modalOkButton"
+                type="button"
+                class="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
+                data-inicio-url="{% url 'arbol:inicio' %}">
           OK
         </button>
       </div>
@@ -53,9 +58,22 @@
               </label>
               <div id="map" class="h-48 w-full rounded border border-gray-300 mb-1"></div>
               <p class="text-xs text-gray-500">Haz clic en el mapa para marcar la ubicación exacta</p>
-              <input type="hidden" id="latitud" name="latitud">
-              <input type="hidden" id="longitud" name="longitud">
-            </div>
+              <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label for="latitud" class="block text-gray-700 text-sm font-medium mb-1">
+                    Latitud *
+                  </label>
+                  <input type="number" id="latitud" name="latitud" class="w-full p-2 border rounded" step="0.000001" min="-90" max="90" inputmode="decimal" required>
+                </div>
+
+                <div>
+                  <label for="longitud" class="block text-gray-700 text-sm font-medium mb-1">
+                    Longitud *
+                  </label>
+                  <input type="number" id="longitud" name="longitud" class="w-full p-2 border rounded" step="0.000001" min="-180" max="180" inputmode="decimal" required>
+                </div>
+              </div>
+
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
@@ -298,7 +316,7 @@
                 <i class="fas fa-camera text-2xl text-gray-400 mb-1"></i>
                 <p class="text-xs text-gray-600">Foto 1 *</p>
                 <input type="file" name="foto1" id="foto1" class="hidden" accept="image/*" required>
-                <img id="preview1" class="mt-1 w-full h-20 object-cover hidden rounded"/>
+                <img id="preview1" class="mt-1 w-full h-20 object-cover hidden rounded" />
               </label>
             </div>
             
@@ -340,21 +358,23 @@
           </div>
         </section>
         <div class="pt-4 border-t border-gray-200">
-          <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center">
-            Registrar Árbol
+          <button type="submit" 
+                  class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                  id="submitButton">
+              Registrar Árbol
           </button>
         </div>
         <div class="mt-3">
-          <a href="{% url 'arbol:inicio' %}" class="w-full bg-white-500 hover:bg-white-600 text-black font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center text-sm"
+          <a href="{% url 'arbol:inicio' %}" class="w-full bg-white-500 hover:bg-white-600 text-black font-semibold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center text-sm">
             <i class="fas fa-home mr-2"></i>
-            Volver a Inicio
-          </a>
+            Volver a Inicio</a>
         </div>
       </form>
     </div>
   </main>
 <script src="{% static 'js/nombres_cientificos.js' %}"></script>
 <script src="{% static 'js/mapa.js' %}"></script>
+<script src="{% static 'js/arbol_form.js' %}"></script>
 </body>
 </html>
 {% endblock %}

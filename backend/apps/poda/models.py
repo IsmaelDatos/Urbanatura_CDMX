@@ -16,7 +16,8 @@ class SolicitudPoda(models.Model):
         CAMELLON = 'camellon', _('Camellón')
         GLORIETA = 'glorieta', _('Glorieta')
         PARQUE = 'parque', _('Parque')
-
+    latitud = models.DecimalField(max_digits=9, decimal_places=6, default=19.4326)
+    longitud = models.DecimalField(max_digits=9, decimal_places=6, default=-99.1332)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='solicitudes_poda')
     motivo_poda = models.CharField(max_length=20, choices=MotivoPoda.choices)
     foto_poda = models.ImageField(upload_to='poda/')

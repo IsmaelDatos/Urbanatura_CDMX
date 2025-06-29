@@ -58,21 +58,15 @@ document.addEventListener('DOMContentLoaded', function() {
       inputCientifico.value = "";
     }
   }
-
-  // Actualizar nombre científico cuando cambie el select
   const selectArbol = document.getElementById('nombre_comun');
   selectArbol.addEventListener('change', actualizarNombreCientifico);
-  actualizarNombreCientifico(); // Para setear al cargar la página si ya tiene valor
-
-  // Fecha actual para el campo de fecha_registro
+  actualizarNombreCientifico();
   const now = new Date();
   const fechaActual = now.toISOString().split('T')[0];
   const fechaRegistroInput = document.getElementById('fecha_registro');
   if(fechaRegistroInput) {
     fechaRegistroInput.value = fechaActual;
   }
-
-  // Mostrar/ocultar campo "Otro" en ubicación
   const ubicacionSelect = document.getElementById('ubicacionSelect');
   const ubicacionOtroContainer = document.getElementById('ubicacionOtroContainer');
   if(ubicacionSelect && ubicacionOtroContainer) {
@@ -88,8 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-
-  // Previsualización de fotos
   for (let i = 1; i <= 5; i++) {
     const input = document.getElementById(`foto${i}`);
     const preview = document.getElementById(`preview${i}`);
@@ -106,49 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   }
-
-  // Validación de altura máxima 50 metros en formulario
-  const arbolForm = document.getElementById('arbolForm');
-  if (arbolForm) {
-    arbolForm.addEventListener('submit', function(event) {
-      const alturaInput = document.getElementById('altura');
-      if (alturaInput && alturaInput.value > 50) {
-        alert("La altura no puede ser mayor a 50 metros.");
-        event.preventDefault();
-        return;
-      }
-      // Aquí va la lógica de envío por fetch (si quieres hacer fetch)
-      event.preventDefault(); // Evitar envío por defecto para manejar fetch
-
-      const formData = new FormData(arbolForm);
-
-      fetch(arbolForm.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          document.getElementById('successModal').classList.remove('hidden');
-          setTimeout(() => {
-            window.location.href = data.redirect_url;
-          }, 2000);
-        } else {
-          alert('Error: ' + (data.error || 'Datos inválidos'));
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Error al conectar con el servidor');
-      });
-    });
-  }
-
-  // Mostrar modal de éxito si viene en URL
   const urlParams = new URLSearchParams(window.location.search);
   const success = urlParams.get('success');
   if (success === 'true') {
@@ -157,21 +106,17 @@ document.addEventListener('DOMContentLoaded', function() {
       modal.classList.remove('hidden');
     }
   }
-
-  // Botón para cerrar modal y redirigir
   const modalOkButton = document.getElementById('modalOkButton');
   if (modalOkButton) {
     modalOkButton.addEventListener('click', function() {
-      window.location.href = "{% url 'arbol:inicio' %}";
+      const inicioUrl = this.getAttribute('data-inicio-url');
+      window.location.href = inicioUrl;
     });
   }
-
-  // Listener para validar e intentar formatear inclinación del tronco
   const inclinacionInput = document.getElementById('inclinacion_tronco');
   if(inclinacionInput) {
     inclinacionInput.addEventListener('input', function(event) {
       let input = event.target.value;
-      // Regex para aceptar hasta 3 dígitos para grados, 2 para minutos y segundos con símbolos
       let regex = /^(\d{0,3})°\s*(\d{0,2})'\s*(\d{0,2})"&/;
       if (regex.test(input)) {
         input = input.replace(regex, '$1° $2\' $3"&');

@@ -17,7 +17,8 @@ class SolicitudDerribo(models.Model):
         CAMELLON = 'camellon', _('Camellón')
         PROPIEDAD_PRIVADA = 'propiedad_privada', _('Propiedad privada')
         AREA_PUBLICA = 'area_publica', _('Área pública')
-
+    latitud = models.DecimalField(max_digits=9, decimal_places=6, default=19.4326)
+    longitud = models.DecimalField(max_digits=9, decimal_places=6, default=-99.1332)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='solicitudes_derribo')
     motivo_derribo = models.CharField(max_length=20, choices=MotivoDerribo.choices)
     foto_derribo = models.ImageField(upload_to='derribo/')

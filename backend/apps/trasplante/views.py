@@ -4,27 +4,40 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import SolicitudTraslado
 from .forms import SolicitudTrasladoForm
-from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import redirect
 
 
 class CrearSolicitudTrasladoView(LoginRequiredMixin, CreateView):
     model = SolicitudTraslado
     form_class = SolicitudTrasladoForm
-    template_name = 'tramites/trasplante.html'
-    success_url = reverse_lazy('traslado:lista')
+    template_name = "tramites/trasplante.html"
+    success_url = reverse_lazy("traslado:lista")
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['usuario'] = self.request.user
+        kwargs["usuario"] = self.request.user
         return kwargs
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(
-            self.request, 
-            'Solicitud de traslado enviada correctamente. Requerirá inspección técnica.'
-        )
-        return response
+        instance = form.save(commit=False)  # El usuario ya se asigna en el form.save()
+        instance.latitud = form.cleaned_data["latitud"]
+        instance.longitud = form.cleaned_data["longitud"]
+        try:
+            instance.save()
+            if self.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return JsonResponse({
+                    "success": True,
+                    "message": "Solicitud de trasplante creada exitosamente. Requerirá inspección técnica."
+                })
+            messages.success(
+                self.request, 
+                "Solicitud de trasplante creada exitosamente. Requerirá inspección técnica."
+            )
+            return redirect(self.get_success_url())
+        except Exception as e:
+            messages.error(self.request, f"Error al guardar solicitud: {str(e)}")
+            return self.form_invalid(form)
 
 class ListaSolicitudesTrasladoView(LoginRequiredMixin, ListView):
     model = SolicitudTraslado

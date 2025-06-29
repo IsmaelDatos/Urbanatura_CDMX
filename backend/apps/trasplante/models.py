@@ -16,7 +16,8 @@ class SolicitudTraslado(models.Model):
         CAMELLON = 'camellon', _('Camellón')
         JARDIN_PRIVADO = 'jardin_privado', _('Jardín privado')
         AREA_VERDE = 'area_verde', _('Área verde pública')
-
+    latitud = models.DecimalField(max_digits=9, decimal_places=6, default=19.4326)
+    longitud = models.DecimalField(max_digits=9, decimal_places=6, default=-99.1332)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='solicitudes_traslado')
     motivo_traslado = models.CharField(max_length=20, choices=MotivoTraslado.choices)
     foto_traslado = models.ImageField(upload_to='traslado/')

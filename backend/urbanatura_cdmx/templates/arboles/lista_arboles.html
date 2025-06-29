@@ -18,7 +18,7 @@
         {% for arbol in arboles %}
         <div class="tree-card">
             {% if arbol.foto1 %}
-            <img src="{{ arbol.foto1.url }}" alt="Imagen de {{ arbol.nombre_comun }}" class="tree-image">
+            <img src="data:image/jpeg;base64,{{ arbol.foto1 }}" alt="Árbol" class="w-32 h-32 object-cover rounded" />
             {% else %}
             <img src="{% static 'img/default-tree.jpg' %}" alt="Imagen predeterminada de árbol" class="tree-image">
             {% endif %}
