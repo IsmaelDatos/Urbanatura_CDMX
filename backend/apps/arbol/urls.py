@@ -1,5 +1,9 @@
 from django.urls import path
 from . import views
+from .views import (
+    home_ciudadano,
+    home_institucion
+)
 
 app_name = 'arbol' 
 
@@ -12,4 +16,6 @@ urlpatterns = [
     path('documentacion/', views.documentacion, name='documentacion'),
     path('informacion_empresa/', views.informacion_empresa, name='informacion_empresa'),
     path('datos-mapa/', views.datos_mapa, name='datos_mapa'),
+    path('home-ciudadano/', home_ciudadano, name='home_ciudadano'),
+    path('home-institucion/', home_institucion, name='home_institucion'),
 ]

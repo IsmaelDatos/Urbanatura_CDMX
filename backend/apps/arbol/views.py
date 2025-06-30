@@ -9,7 +9,10 @@ from django.conf import settings
 from django.db import transaction, IntegrityError
 import logging
 from apps.poda.models import SolicitudPoda
+from django.contrib.auth.decorators import login_required
 from apps.derribo.models import SolicitudDerribo
+from apps.trasplante.models import SolicitudTraslado
+from apps.usuarios.models import Usuario
 
 logger = logging.getLogger(__name__)
 
@@ -153,3 +156,31 @@ def datos_mapa(request):
         'podas': list(podas),
         'derribos': list(derribos)
     })
+    
+@login_required
+def home_ciudadano(request):
+    context = {
+        "solicitudes_poda":     SolicitudPoda.objects.filter(usuario=request.user)
+                               .order_by("-fecha_creacion")[:5],
+        "solicitudes_derribo":  SolicitudDerribo.objects.filter(usuario=request.user)
+                               .order_by("-fecha_creacion")[:5],
+        "solicitudes_traslado": SolicitudTraslado.objects.filter(usuario=request.user)
+                               .order_by("-fecha_creacion")[:5],
+    }
+    return render(request, "home/home_ciudadano.html", context)
+
+@login_required
+def home_institucion(request):
+    if request.user.tipo_usuario != "INSTITUCION":
+        return redirect("home_ciudadano")
+
+    context = {
+        "institucion": request.user,
+        "solicitudes_poda":     SolicitudPoda.objects.filter(usuario=request.user)
+                               .order_by("-fecha_creacion")[:10],
+        "solicitudes_derribo":  SolicitudDerribo.objects.filter(usuario=request.user)
+                               .order_by("-fecha_creacion")[:10],
+        "solicitudes_traslado": SolicitudTraslado.objects.filter(usuario=request.user)
+                               .order_by("-fecha_creacion")[:10],
+    }
+    return render(request, "home/home_institucion.html", context)

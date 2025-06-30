@@ -1,5 +1,4 @@
 {% load static %}
-{% include 'navbar.html' %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,20 +8,259 @@
     <link rel="stylesheet" href="{% static 'css/home_institucion.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .tramite-card { transition: all 0.3s ease; }
+        .tramite-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .status-badge { font-size: .75rem; padding: .25rem .5rem; border-radius: 9999px; }
+        .status-pendiente { background:#FEF3C7; color:#92400E; }
+        .status-aprobada { background:#D1FAE5; color:#065F46; }
+        .status-rechazada { background:#FEE2E2; color:#991B1B; }
+        .status-requiere { background:#E0E7FF; color:#3730A3; } /* Nuevo estado para instituciones */
+    </style>
 </head>
-<body>
-    <main class="container">
-        <h1>Bienvenido Institución</h1>
-        <p>Esta es tu página de perfil como institución.</p>
-        <div class="institution-info">
-            <p>Nombre: {{ institucion.nombre_institucion }}</p>
-            <p>RFC: {{ institucion.rfc }}</p>
-            <p>Email: {{ institucion.email }}</p>
-            <p>Dirección: {{ institucion.calle }} {{ institucion.num_ext }}{% if institucion.num_int %}, Int. {{ institucion.num_int }}{% endif %}, {{ institucion.municipio }}</p>
-            <a href="{% url 'usuarios:edit_institucion' %}" class="text-indigo-600 hover:text-indigo-900">
-                <i class="fas fa-edit mr-1"></i>Editar Perfil
-            </a>
+<body class="bg-gray-50">
+    {% include 'navbar.html' %}
+    
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Bienvenido, {{ institucion.nombre_institucion }}</h1>
+            <p class="text-gray-600 mb-6">Panel de gestión institucional</p>
+            
+            <!-- Tarjeta de información institucional -->
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <!-- Información de usuario -->
+                <div class="bg-indigo-50 p-6 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Información Institucional</h2>
+                    <div class="space-y-3">
+                        <p><span class="font-medium">Institución:</span> {{ institucion.nombre_institucion }}</p>
+                        <p><span class="font-medium">Responsable:</span> {{ institucion.first_name }} {{ institucion.primer_apellido }}</p>
+                        <p><span class="font-medium">Email:</span> {{ institucion.email }}</p>
+                        <p><span class="font-medium">Teléfono:</span> {{ institucion.telefono }}</p>
+                    </div>
+                    <a href="{% url 'usuarios:edit_institucion' %}" class="mt-4 inline-flex items-center text-indigo-600 hover:text-indigo-800 transition">
+                        <i class="fas fa-edit mr-2"></i>Editar Perfil
+                    </a>
+                </div>
+                
+                <!-- Estadísticas rápidas -->
+                <div class="bg-purple-50 p-6 rounded-lg">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800">Estadísticas</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white p-3 rounded-lg shadow-sm text-center">
+                            <div class="text-2xl font-bold text-indigo-600 mb-1">{{ solicitudes_poda.count }}</div>
+                            <p class="font-medium text-sm">Solicitudes de poda</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm text-center">
+                            <div class="text-2xl font-bold text-red-600 mb-1">{{ solicitudes_derribo.count }}</div>
+                            <p class="font-medium text-sm">Solicitudes de derribo</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm text-center">
+                            <div class="text-2xl font-bold text-blue-600 mb-1">{{ solicitudes_traslado.count }}</div>
+                            <p class="font-medium text-sm">Solicitudes de trasplante</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm text-center">
+                            <div class="text-2xl font-bold text-green-600 mb-1">0</div>
+                            <p class="font-medium text-sm">Pendientes de revisión</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- === SECCIÓN DE TRÁMITES === -->
+            <div class="mb-8">
+                <!-- Encabezado con contadores -->
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Tus Trámites Recientes</h2>
+                    <div class="flex space-x-2">
+                        <span class="text-sm text-gray-500">
+                            <span class="font-medium text-blue-600">{{ solicitudes_poda.count }}</span> Poda
+                        </span>
+                        <span class="text-sm text-gray-500">
+                            <span class="font-medium text-red-600">{{ solicitudes_derribo.count }}</span> Derribo
+                        </span>
+                        <span class="text-sm text-gray-500">
+                            <span class="font-medium text-purple-600">{{ solicitudes_traslado.count }}</span> Trasplante
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Pestañas -->
+                <div class="border-b border-gray-200 mb-6">
+                    <nav class="-mb-px flex space-x-8">
+                        <button onclick="showTab('poda')" 
+                                class="tab-button active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-green-500 text-green-600 flex items-center">
+                            <i class="fas fa-cut mr-2"></i> Poda
+                        </button>
+                        <button onclick="showTab('derribo')" 
+                                class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 flex items-center">
+                            <i class="fas fa-tree mr-2"></i> Derribo
+                        </button>
+                        <button onclick="showTab('traslado')" 
+                                class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 flex items-center">
+                            <i class="fas fa-exchange-alt mr-2"></i> Trasplante
+                        </button>
+                    </nav>
+                </div>
+                
+                <!-- === Contenido Poda === -->
+                <div id="poda-tab" class="tab-content">
+                    {% if solicitudes_poda %}
+                    <div class="grid md:grid-cols-2 gap-4">
+                        {% for solicitud in solicitudes_poda %}
+                        <div class="tramite-card bg-white p-4 rounded-lg border border-gray-200 hover:border-green-200 transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">{{ solicitud.calle_poda }}</h3>
+                                    <p class="text-xs text-gray-500">{{ solicitud.colonia_poda }}</p>
+                                </div>
+                                <span class="status-badge
+                                    {% if solicitud.estatus == 'aprobada' %}status-aprobada
+                                    {% elif solicitud.estatus == 'rechazada' %}status-rechazada
+                                    {% else %}status-pendiente{% endif %}">
+                                    {{ solicitud.get_estatus_display }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600 mb-3">
+                                <span>{{ solicitud.fecha_creacion|date:"d M Y" }}</span>
+                                <span>{{ solicitud.get_motivo_poda_display }}</span>
+                            </div>
+                            <div class="flex justify-between items-center border-t pt-3">
+                                <span class="text-xs text-gray-500 flex items-center">
+                                    <i class="fas fa-user mr-1"></i> {{ solicitud.usuario.first_name }}
+                                </span>
+                                {% if solicitud.estatus == 'pendiente' %}
+                                <a href="#" class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                    <i class="fas fa-check-circle mr-1"></i> Revisar
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="bg-gray-50 p-8 text-center rounded-lg border border-dashed border-gray-300">
+                        <i class="fas fa-cut text-gray-300 text-4xl mb-3"></i>
+                        <h3 class="text-lg font-medium text-gray-500 mb-1">No hay solicitudes de poda</h3>
+                        <p class="text-gray-400 text-sm mb-3">No se han registrado solicitudes de poda para esta institución</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- === Contenido Derribo === -->
+                <div id="derribo-tab" class="tab-content hidden">
+                    {% if solicitudes_derribo %}
+                    <div class="grid md:grid-cols-2 gap-4">
+                        {% for solicitud in solicitudes_derribo %}
+                        <div class="tramite-card bg-white p-4 rounded-lg border border-gray-200 hover:border-red-200 transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">{{ solicitud.calle_derribo }}</h3>
+                                    <p class="text-xs text-gray-500">{{ solicitud.colonia_derribo }}</p>
+                                </div>
+                                <span class="status-badge
+                                    {% if solicitud.estatus == 'aprobada' %}status-aprobada
+                                    {% elif solicitud.estatus == 'rechazada' %}status-rechazada
+                                    {% elif solicitud.estatus == 'requiere_aprobacion' %}status-requiere
+                                    {% else %}status-pendiente{% endif %}">
+                                    {{ solicitud.get_estatus_display }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600 mb-3">
+                                <span>{{ solicitud.fecha_creacion|date:"d M Y" }}</span>
+                                <span>{{ solicitud.get_motivo_derribo_display }}</span>
+                            </div>
+                            <div class="flex justify-between items-center border-t pt-3">
+                                <span class="text-xs text-gray-500 flex items-center">
+                                    <i class="fas fa-user mr-1"></i> {{ solicitud.usuario.first_name }}
+                                </span>
+                                {% if solicitud.estatus == 'pendiente' or solicitud.estatus == 'requiere_aprobacion' %}
+                                <a href="#" class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                    <i class="fas fa-check-circle mr-1"></i> Revisar
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="bg-gray-50 p-8 text-center rounded-lg border border-dashed border-gray-300">
+                        <i class="fas fa-tree text-gray-300 text-4xl mb-3"></i>
+                        <h3 class="text-lg font-medium text-gray-500 mb-1">No hay solicitudes de derribo</h3>
+                        <p class="text-gray-400 text-sm mb-3">No se han registrado solicitudes de derribo para esta institución</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- === Contenido Trasplante === -->
+                <div id="traslado-tab" class="tab-content hidden">
+                    {% if solicitudes_traslado %}
+                    <div class="grid md:grid-cols-2 gap-4">
+                        {% for solicitud in solicitudes_traslado %}
+                        <div class="tramite-card bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-200 transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">{{ solicitud.calle_actual_traslado }}</h3>
+                                    <p class="text-xs text-gray-500">{{ solicitud.colonia_actual_traslado }}</p>
+                                </div>
+                                <span class="status-badge
+                                    {% if solicitud.estatus == 'aprobada' %}status-aprobada
+                                    {% elif solicitud.estatus == 'rechazada' %}status-rechazada
+                                    {% elif solicitud.estatus == 'requiere_inspeccion' %}status-requiere
+                                    {% else %}status-pendiente{% endif %}">
+                                    {{ solicitud.get_estatus_display }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600 mb-3">
+                                <span>{{ solicitud.fecha_creacion|date:"d M Y" }}</span>
+                                <span>{{ solicitud.get_motivo_traslado_display }}</span>
+                            </div>
+                            <div class="flex justify-between items-center border-t pt-3">
+                                <span class="text-xs text-gray-500 flex items-center">
+                                    <i class="fas fa-user mr-1"></i> {{ solicitud.usuario.first_name }}
+                                </span>
+                                {% if solicitud.estatus == 'pendiente' or solicitud.estatus == 'requiere_inspeccion' %}
+                                <a href="#" class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                    <i class="fas fa-check-circle mr-1"></i> Revisar
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="bg-gray-50 p-8 text-center rounded-lg border border-dashed border-gray-300">
+                        <i class="fas fa-exchange-alt text-gray-300 text-4xl mb-3"></i>
+                        <h3 class="text-lg font-medium text-gray-500 mb-1">No hay solicitudes de trasplante</h3>
+                        <p class="text-gray-400 text-sm mb-3">No se han registrado solicitudes de trasplante para esta institución</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </main>
+
+    <!-- Script de pestañas -->
+    <script>
+        function showTab(tabName) {
+            // Oculta todas
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            // Muestra la elegida
+            document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+            
+            // Estilos de botones
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('border-green-500', 'text-green-600');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            // Resalta el actual
+            event.currentTarget.classList.add('border-green-500', 'text-green-600');
+            event.currentTarget.classList.remove('border-transparent', 'text-gray-500');
+        }
+    </script>
 </body>
 </html>
