@@ -6,13 +6,15 @@ from .models import SolicitudTraslado
 from .forms import SolicitudTrasladoForm
 from django.http import JsonResponse
 from django.shortcuts import redirect
+import logging
 
+logger = logging.getLogger(__name__)
 
 class CrearSolicitudTrasladoView(LoginRequiredMixin, CreateView):
     model = SolicitudTraslado
     form_class = SolicitudTrasladoForm
     template_name = "tramites/trasplante.html"
-    success_url = reverse_lazy("traslado:lista")
+    success_url = reverse_lazy("arbol:inicio")
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -20,29 +22,48 @@ class CrearSolicitudTrasladoView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        instance = form.save(commit=False)  # El usuario ya se asigna en el form.save()
-        instance.latitud = form.cleaned_data["latitud"]
-        instance.longitud = form.cleaned_data["longitud"]
+        logger.info("Intentando guardar solicitud de trasplante...")
         try:
-            instance.save()
-            if self.request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return JsonResponse({
-                    "success": True,
-                    "message": "Solicitud de trasplante creada exitosamente. Requerirá inspección técnica."
-                })
-            messages.success(
-                self.request, 
-                "Solicitud de trasplante creada exitosamente. Requerirá inspección técnica."
-            )
+            self.object = form.save()
+            logger.info(f"Solicitud de trasplante guardada con ID: {self.object.id}")
+            
+            response_data = {
+                'success': True,
+                'message': 'Solicitud de trasplante creada exitosamente. Requerirá inspección técnica.',
+                'redirect_url': str(self.get_success_url())
+            }
+            
+            if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse(response_data)
+                
+            messages.success(self.request, response_data['message'])
             return redirect(self.get_success_url())
+            
         except Exception as e:
-            messages.error(self.request, f"Error al guardar solicitud: {str(e)}")
+            logger.error(f"Error al guardar solicitud de trasplante: {str(e)}", exc_info=True)
+            if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Error al guardar la solicitud. Por favor verifica los datos.'
+                }, status=400)
+            messages.error(self.request, 'Error al guardar la solicitud. Por favor verifica los datos.')
             return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        logger.warning(f"Formulario inválido. Errores: {form.errors}")
+        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors.get_json_data(),
+                'message': 'Por favor corrige los errores en el formulario'
+            }, status=400)
+        return super().form_invalid(form)
 
 class ListaSolicitudesTrasladoView(LoginRequiredMixin, ListView):
     model = SolicitudTraslado
     template_name = 'traslado/lista_solicitudes.html'
     context_object_name = 'solicitudes'
+    paginate_by = 10
 
     def get_queryset(self):
         return SolicitudTraslado.objects.filter(usuario=self.request.user).order_by('-fecha_creacion')

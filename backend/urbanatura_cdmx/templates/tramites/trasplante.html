@@ -17,124 +17,171 @@
   <main class="flex justify-center mt-8 mb-8">
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
       <h1 class="text-2xl font-bold mb-6 text-center">Solicitud de Trasplante</h1>
+
       <form method="post" enctype="multipart/form-data" id="solicitudForm">
         {% csrf_token %}
         
-        <!-- Sección del Mapa para ubicación actual -->
+        <!-- Sección del Mapa -->
         <div class="mb-6">
-          <h2 class="text-lg font-bold mb-2">Ubicación actual del Árbol</h2>
+          <h2 class="text-lg font-bold mb-2">Ubicación Actual del Árbol</h2>
           <div id="map" class="mb-4"></div>
           
-          <!-- Campos de coordenadas editables -->
+          <!-- Coordenadas visibles/editables -->
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-gray-700 text-sm font-medium mb-1">Latitud *</label>
-              <input type="text" id="lat_display" name="latitud_actual" class="w-full p-2 border rounded" required>
+              <input type="number" step="0.000001" id="lat_display" name="latitud" 
+                     class="w-full p-2 border rounded" required
+                     value="{{ form.latitud.value|default_if_none:'19.4326' }}">
             </div>
             <div>
               <label class="block text-gray-700 text-sm font-medium mb-1">Longitud *</label>
-              <input type="text" id="lng_display" name="longitud_actual" class="w-full p-2 border rounded" required>
+              <input type="number" step="0.000001" id="lng_display" name="longitud" 
+                     class="w-full p-2 border rounded" required
+                     value="{{ form.longitud.value|default_if_none:'-99.1332' }}">
             </div>
           </div>
         </div>
 
-        <!-- Sección de Dirección actual -->
-        <div class="mb-6 space-y-4">
-          <h2 class="text-lg font-bold mb-2">Dirección actual</h2>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Sección de Dirección Actual -->
+        <div class="mb-6">
+          <h2 class="text-lg font-bold mb-2">Dirección Actual</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-gray-700 text-sm font-medium mb-1">Código Postal *</label>
-              <input type="text" id="codigo_postal" name="cp_actual_trasplante" maxlength="5" 
+              <input type="text" id="codigo_postal" name="cp_actual_traslado" maxlength="5"
                      class="w-full p-2 border rounded" required>
               <div id="cp-loading" class="hidden text-blue-500 text-sm mt-1">
                 <i class="fas fa-spinner fa-spin"></i> Buscando datos...
               </div>
             </div>
-            
+
             <div>
               <label class="block text-gray-700 text-sm font-medium mb-1">Alcaldía *</label>
-              <input type="text" id="alcaldia" name="alcaldia_actual_trasplante" 
+              <input type="text" id="alcaldia" name="alcaldia_actual_traslado"
                      class="w-full p-2 border rounded bg-gray-50" readonly required>
             </div>
           </div>
-          
-          <div>
+
+          <div class="mb-4">
             <label class="block text-gray-700 text-sm font-medium mb-1">Colonia *</label>
-            <select id="colonia" name="colonia_actual_trasplante" 
+            <select id="colonia" name="colonia_actual_traslado"
                     class="w-full p-2 border rounded bg-gray-50" required disabled>
-                <option value="">Primero ingresa tu código postal</option>
+              <option value="">Primero ingresa tu código postal</option>
             </select>
           </div>
-          
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div class="md:col-span-2">
               <label class="block text-gray-700 text-sm font-medium mb-1">Calle *</label>
-              <input type="text" id="calle" name="calle_actual_trasplante" 
+              <input type="text" id="calle" name="calle_actual_traslado"
                      class="w-full p-2 border rounded" required>
             </div>
-            
+
             <div>
               <label class="block text-gray-700 text-sm font-medium mb-1">Número Ext. *</label>
-              <input type="text" id="num_ext" name="numero_ext_actual_trasplante" 
+              <input type="text" id="num_ext" name="numero_ext_actual_traslado"
                      class="w-full p-2 border rounded" required>
             </div>
           </div>
-          
+
           <div>
             <label class="block text-gray-700 text-sm font-medium mb-1">Número Int.</label>
-            <input type="text" id="num_int" name="numero_int_actual_trasplante" 
+            <input type="text" id="num_int" name="numero_int_actual_traslado"
                    class="w-full p-2 border rounded">
           </div>
         </div>
 
-        <!-- Resto del formulario -->
+        <!-- Sección de Nueva Ubicación (condicional) -->
+        <div class="mb-6 p-4 border border-gray-200 rounded-lg" id="nuevaUbicacionSection">
+          <h2 class="text-lg font-bold mb-4">Nueva Ubicación (opcional)</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-medium mb-1">Código Postal</label>
+              <input type="text" id="codigo_postal_nuevo" name="cp_nuevo_traslado" maxlength="5"
+                     class="w-full p-2 border rounded">
+            </div>
+
+            <div>
+              <label class="block text-gray-700 text-sm font-medium mb-1">Alcaldía</label>
+              <input type="text" id="alcaldia_nueva" name="alcaldia_nueva_traslado"
+                     class="w-full p-2 border rounded bg-gray-50" readonly>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-medium mb-1">Colonia</label>
+            <select id="colonia_nueva" name="colonia_nueva_traslado"
+                    class="w-full p-2 border rounded bg-gray-50" disabled>
+              <option value="">Primero ingresa el código postal</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="md:col-span-2">
+              <label class="block text-gray-700 text-sm font-medium mb-1">Calle</label>
+              <input type="text" id="calle_nueva" name="calle_nueva_traslado"
+                     class="w-full p-2 border rounded">
+            </div>
+
+            <div>
+              <label class="block text-gray-700 text-sm font-medium mb-1">Número Ext.</label>
+              <input type="text" id="num_ext_nuevo" name="numero_ext_nuevo_traslado"
+                     class="w-full p-2 border rounded">
+            </div>
+          </div>
+        </div>
+
+        <!-- Motivo de trasplante -->
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-2">Motivo de trasplante*</label>
-          <select name="motivo_trasplante" class="w-full p-2 border rounded focus:ring-2 focus:ring-green-500" required>
+          <select name="motivo_traslado" id="motivoTraslado" class="w-full p-2 border rounded focus:ring-2 focus:ring-green-500" required>
             <option value="" disabled selected>Seleccione un motivo</option>
-            <option value="conservacion">Conservación del árbol en mejor ubicación</option>
-            <option value="construccion">Obra de construcción en su ubicación actual</option>
-            <option value="desarrollo">Mejor desarrollo del árbol en otra ubicación</option>
-            <option value="riesgo">Por riesgo en su ubicación actual</option>
-            <option value="plan_urbanistico">Como parte de un plan urbanístico</option>
+            <option value="conservacion">Conservación del árbol</option>
+            <option value="construccion">Obra de construcción</option>
+            <option value="mejor_ubicacion">Mejor ubicación para su desarrollo</option>
+            <option value="riesgo">Por riesgo en ubicación actual</option>
           </select>
         </div>
-        
+
+        <!-- Ubicación física actual del árbol -->
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-2">Ubicación actual del árbol*</label>
-          <select name="ubicacion_actual_trasplante" class="w-full p-2 border rounded" required>
+          <select name="ubicacion_actual_traslado" class="w-full p-2 border rounded" required>
             <option value="" disabled selected>Seleccione ubicación</option>
             <option value="banqueta">Banqueta</option>
             <option value="camellon">Camellón</option>
-            <option value="glorieta">Glorieta</option>
-            <option value="parque">Parque</option>
-            <option value="arriate">Arriate</option>
-            <option value="plaza">Plaza</option>
-            <option value="propiedad_privada">Propiedad privada</option>
-            <option value="obra_civil">Obra civil</option>
+            <option value="jardin_privado">Jardín privado</option>
+            <option value="area_verde">Área verde pública</option>
           </select>
         </div>
-        
+
+        <!-- Fotografía -->
         <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2">Fotografía del árbol*</label>
-          <input name="foto_trasplante" type="file" accept="image/*" class="w-full p-2 border rounded" required>
-          <p class="text-xs text-gray-500 mt-1">Suba una foto clara del árbol a trasplantar</p>
-        </div>
-        
+            <label class="block text-gray-700 font-medium mb-2">Fotografía del árbol*</label>
+            <input name="foto_traslado_upload" type="file" accept="image/jpeg,image/png" 
+                   class="w-full p-2 border rounded" required>
+            <p class="text-xs text-gray-500 mt-1">Suba una foto clara (JPEG o PNG, max 5MB)</p>
+          </div>
+
+        <!-- Información adicional -->
         <div class="mb-6">
           <label class="block text-gray-700 font-medium mb-2">Información adicional*</label>
-          <textarea name="info_adicional_trasplante" placeholder="Especifique características del árbol y razones para el trasplante..." 
+          <textarea name="info_adicional_traslado" placeholder="Describa las características del árbol y razones para el trasplante..."
                     class="w-full p-2 border rounded h-24" required></textarea>
         </div>
-        
-        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded font-medium transition duration-300">
+
+        <button type="submit"
+                class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded font-medium transition duration-300">
           Enviar solicitud de trasplante
         </button>
       </form>
     </div>
   </main>
 
+  <!-- Modal de confirmación -->
   <div id="confirmacionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg max-w-sm mx-auto">
       <h3 class="text-xl font-bold mb-4">¡Solicitud enviada!</h3>
@@ -145,30 +192,152 @@
     </div>
   </div>
 
-  <!-- Incluir JS -->
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="{% static 'js/tramites_mapa.js' %}"></script>
-
-  <script>
-    // Manejo del formulario
-    document.getElementById('solicitudForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      document.getElementById('confirmacionModal').classList.remove('hidden');
-    });
-
-    function cerrarModal() {
-      document.getElementById('confirmacionModal').classList.add('hidden');
-      window.location.href = "{% url 'arbol:inicio' %}";
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="{% static 'js/tramites_mapa.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('solicitudForm');
+  form.action = "{% url 'traslado:solicitar' %}";
+  
+  // Mostrar/ocultar sección de nueva ubicación según motivo
+  const motivoSelect = document.getElementById('motivoTraslado');
+  const nuevaUbicacionSection = document.getElementById('nuevaUbicacionSection');
+  
+  function toggleNuevaUbicacion() {
+    if (motivoSelect.value === 'mejor_ubicacion') {
+      nuevaUbicacionSection.classList.remove('hidden');
+      // Hacer requeridos los campos de nueva ubicación
+      document.querySelectorAll('#nuevaUbicacionSection [name]').forEach(field => {
+        field.required = true;
+      });
+    } else {
+      nuevaUbicacionSection.classList.add('hidden');
+      // Quitar requerido de campos de nueva ubicación
+      document.querySelectorAll('#nuevaUbicacionSection [name]').forEach(field => {
+        field.required = false;
+      });
     }
+  }
+  
+  motivoSelect.addEventListener('change', toggleNuevaUbicacion);
+  toggleNuevaUbicacion(); // Ejecutar al cargar
 
-    // Opcional: Si quieres agregar funcionalidad para la nueva ubicación
-    document.getElementById('codigo_postal_nuevo').addEventListener('input', function() {
-      const cp = this.value.trim();
-      if (cp.length === 5 && /^\d+$/.test(cp)) {
-        // Aquí podrías implementar una búsqueda similar para la nueva ubicación
-        console.log('Buscando nueva ubicación para CP:', cp);
+  // Manejo del envío del formulario
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const lat = parseFloat(document.getElementById('lat_display').value);
+    const lng = parseFloat(document.getElementById('lng_display').value);
+
+    if (!validarCoordenadas(lat, lng)) {
+      alert('Por favor ingrese coordenadas válidas');
+      return;
+    }
+    
+    const formData = new FormData(form);
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        const modal = document.getElementById('confirmacionModal');
+        modal.classList.remove('hidden');
+        modal.querySelector('button').onclick = () => {
+          window.location.href = data.redirect_url || "{% url 'arbol:inicio' %}";
+        };
+      } else {
+        let errorMessage = data.message || 'Error al enviar la solicitud';
+        if (data.errors) {
+          errorMessage += '\n' + Object.values(data.errors)
+            .map(err => err[0]?.message || err[0])
+            .join('\n');
+        }
+        alert(errorMessage);
       }
-    });
-  </script>
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión. Por favor intenta nuevamente.');
+    }
+  });
+});
+
+function validarCoordenadas(lat, lng) {
+  return !isNaN(lat) && !isNaN(lng) &&
+         lat >= -90 && lat <= 90 &&
+         lng >= -180 && lng <= 180;
+}
+
+function cerrarModal() {
+  document.getElementById('confirmacionModal').classList.add('hidden');
+  window.location.href = "{% url 'arbol:inicio' %}";
+}
+
+// Función para manejar la nueva ubicación (similar a tramites_mapa.js pero para nueva ubicación)
+document.getElementById('codigo_postal_nuevo').addEventListener('input', function() {
+  const cp = this.value.trim();
+  if (cp.length === 5 && /^\d+$/.test(cp)) {
+    buscarDatosCP(cp, 'nueva');
+  }
+});
+
+async function buscarDatosCP(cp, tipo) {
+  try {
+    const res = await fetch(`https://sepomex.icalialabs.com/api/v1/zip_codes?zip_code=${cp}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    
+    if (tipo === 'nueva') {
+      // Llenar datos de nueva ubicación
+      document.getElementById('alcaldia_nueva').value = data.zip_codes[0]?.d_mnpio || '';
+      
+      const coloniaSelect = document.getElementById('colonia_nueva');
+      coloniaSelect.innerHTML = '';
+      
+      if (data.zip_codes.length === 1) {
+        const opt = document.createElement('option');
+        opt.value = data.zip_codes[0].d_asenta;
+        opt.textContent = `${data.zip_codes[0].d_asenta} (${data.zip_codes[0].d_tipo_asenta})`;
+        coloniaSelect.appendChild(opt);
+      } else {
+        const optDefault = document.createElement('option');
+        optDefault.value = '';
+        optDefault.textContent = '-- Selecciona una colonia --';
+        optDefault.selected = true;
+        coloniaSelect.appendChild(optDefault);
+        
+        data.zip_codes.sort((a, b) => a.d_asenta.localeCompare(b.d_asenta))
+          .forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.d_asenta;
+            opt.textContent = `${item.d_asenta} (${item.d_tipo_asenta})`;
+            coloniaSelect.appendChild(opt);
+          });
+      }
+      coloniaSelect.disabled = false;
+    }
+  } catch (e) {
+    console.error('Error al buscar CP:', e);
+    mostrarError('Error al obtener datos. Intenta nuevamente.', tipo);
+  }
+}
+
+function mostrarError(msg, tipo) {
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'error-message text-red-500 text-sm mt-1';
+  errorDiv.textContent = msg;
+  
+  if (tipo === 'nueva') {
+    const cpInput = document.getElementById('codigo_postal_nuevo');
+    const existingError = cpInput.parentNode.querySelector('.error-message');
+    if (existingError) {
+      cpInput.parentNode.removeChild(existingError);
+    }
+    cpInput.parentNode.insertBefore(errorDiv, cpInput.nextSibling);
+  }
+}
+</script>
 </body>
 </html>

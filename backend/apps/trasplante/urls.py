@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import (CrearSolicitudTrasladoView, 
-                   ListaSolicitudesTrasladoView,
-                   DetalleSolicitudTrasladoView)
+from .views import (
+    CrearSolicitudTrasladoView,
+    ListaSolicitudesTrasladoView,
+    DetalleSolicitudTrasladoView
+)
 
 app_name = 'traslado'
 
