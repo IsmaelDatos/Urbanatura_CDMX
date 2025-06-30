@@ -84,12 +84,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+  // Modificar la función actualizarInputsCoordenadas
   function actualizarInputsCoordenadas(lat, lng) {
+    if (!validarCoordenadas(lat, lng)) return;
+    
     const latF = parseFloat(lat).toFixed(6);
     const lngF = parseFloat(lng).toFixed(6);
-    latInput.value = latF;
-    lngInput.value = lngF;
-  }
+    
+    // Actualizar campos visibles
+    document.getElementById('lat_display').value = latF;
+    document.getElementById('lng_display').value = lngF;
+}
   async function buscarCP(cp) {
     if (cpCache[cp]) {
       llenarDatos(cpCache[cp]);

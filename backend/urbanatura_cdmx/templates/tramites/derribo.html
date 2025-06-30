@@ -26,8 +26,8 @@
           <div id="map" class="mb-4"></div>
           
           <!-- Campos ocultos para coordenadas -->
-          <input type="hidden" id="latitud" name="latitud">
-          <input type="hidden" id="longitud" name="longitud">
+          <input type="hidden" id="latitud" name="latitud" value="{{ form.latitud.value|default_if_none:'' }}">
+          <input type="hidden" id="longitud" name="longitud" value="{{ form.longitud.value|default_if_none:'' }}">
           
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div>

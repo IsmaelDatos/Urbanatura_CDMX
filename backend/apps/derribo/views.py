@@ -21,11 +21,14 @@ class CrearSolicitudDerriboView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
+        print("Datos del formulario:", form.cleaned_data)  # Agregar esto
         instance = form.save(commit=False)
-        instance.latitud = form.cleaned_data["latitud"]
-        instance.longitud = form.cleaned_data["longitud"]  
+        print("Instancia antes de guardar:", instance.__dict__)  # Agregar esto
+        
         try:
             instance.save()
+            print("Instancia guardada con ID:", instance.id)  # Agregar esto
+            
             if self.request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return JsonResponse({
                     "success": True, 
@@ -34,6 +37,7 @@ class CrearSolicitudDerriboView(LoginRequiredMixin, CreateView):
             messages.success(self.request, "Solicitud de derribo creada exitosamente")
             return redirect(self.get_success_url())
         except Exception as e:
+            print("Error al guardar:", str(e))  # Agregar esto
             messages.error(self.request, f"Error al guardar solicitud: {str(e)}")
             return self.form_invalid(form)
 

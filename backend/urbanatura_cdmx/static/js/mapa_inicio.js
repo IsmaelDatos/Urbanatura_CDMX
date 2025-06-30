@@ -55,14 +55,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const podaIcon = L.icon({
-        iconUrl: '/static/images/poda-icon.png',
+        iconUrl: '/static/img/poda-icon.png',
         iconSize: [25, 25],
         iconAnchor: [12, 25],
         popupAnchor: [0, -25]
     });
 
     const derriboIcon = L.icon({
-        iconUrl: '/static/images/derribo-icon.png',
+        iconUrl: '/static/img/derribo-icon.png',
         iconSize: [25, 25],
         iconAnchor: [12, 25],
         popupAnchor: [0, -25]
