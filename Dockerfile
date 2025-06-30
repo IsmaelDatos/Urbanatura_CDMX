@@ -1,39 +1,52 @@
+# Stage 1: Builder
 FROM python:3.9-slim as builder
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    python3-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY . .
 
-# Instalar dependencias del sistema y Python
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    python3-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && pip install --user -r requirements.txt
+# Install Python dependencies
+RUN pip install --user --no-cache-dir gunicorn==21.2.0 && \
+    pip install --user --no-cache-dir -r requirements.txt
 
+# Stage 2: Runtime
 FROM python:3.9-slim
 
-# Dependencias de runtime
-RUN apt-get update && apt-get install -y \
-    libpq5 \
-    && rm -rf /var/lib/apt/lists/*
+# Runtime dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libpq5 && \
+    rm -rf /var/lib/apt/lists/*
 
-# Variables de entorno
+# Environment variables
 ENV PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=urbanatura_cdmx.settings \
     PORT=8000 \
-    PATH="/app/.local/bin:${PATH}"
+    PATH="/root/.local/bin:${PATH}"
 
-# Copiar solo lo necesario desde el builder
+# Copy from builder
 COPY --from=builder /root/.local /root/.local
 COPY --from=builder /app/backend /app
 
-# Crear directorios y configurar permisos
-RUN mkdir -p /app/staticfiles /app/media \
-    && chmod -R a+rwx /app/media /app/staticfiles
+# Create directories
+RUN mkdir -p /app/static /app/media && \
+    chmod -R a+rwx /app/media /app/static
 
 WORKDIR /app
 
-# Exponer puerto y comando de inicio
+# Expose port
 EXPOSE $PORT
+
+# Health check (opcional pero recomendado)
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:$PORT/ || exit 1
+
+# Run command
 CMD ["gunicorn", "urbanatura_cdmx.wsgi:application", "--bind", "0.0.0.0:8000"]
