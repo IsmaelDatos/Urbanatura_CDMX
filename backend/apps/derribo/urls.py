@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import (CrearSolicitudDerriboView, 
-                   ListaSolicitudesDerriboView,
-                   DetalleSolicitudDerriboView)
+from .views import (
+    CrearSolicitudDerriboView, 
+    ListaSolicitudesDerriboView,
+    DetalleSolicitudDerriboView
+)
 
 app_name = 'derribo'
 

@@ -17,6 +17,7 @@
   <main class="flex justify-center mt-8 mb-8">
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
       <h1 class="text-2xl font-bold mb-6 text-center">Solicitud de Derribo</h1>
+
       <form method="post" enctype="multipart/form-data" id="solicitudForm">
         {% csrf_token %}
         
@@ -25,18 +26,19 @@
           <h2 class="text-lg font-bold mb-2">Ubicación del Árbol</h2>
           <div id="map" class="mb-4"></div>
           
-          <!-- Campos ocultos para coordenadas -->
-          <input type="hidden" id="latitud" name="latitud" value="{{ form.latitud.value|default_if_none:'' }}">
-          <input type="hidden" id="longitud" name="longitud" value="{{ form.longitud.value|default_if_none:'' }}">
-          
+          <!-- Coordenadas visibles/editables -->
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-gray-700 text-sm font-medium mb-1">Latitud *</label>
-              <input type="text" id="lat_display" name="latitud" class="w-full p-2 border rounded" required>
+              <input type="number" step="0.000001" id="lat_display" name="latitud" 
+                     class="w-full p-2 border rounded" required
+                     value="{{ form.latitud.value|default_if_none:'19.4326' }}">
             </div>
             <div>
               <label class="block text-gray-700 text-sm font-medium mb-1">Longitud *</label>
-              <input type="text" id="lng_display" name="longitud" class="w-full p-2 border rounded" required>
+              <input type="number" step="0.000001" id="lng_display" name="longitud" 
+                     class="w-full p-2 border rounded" required
+                     value="{{ form.longitud.value|default_if_none:'-99.1332' }}">
             </div>
           </div>
         </div>
@@ -44,100 +46,102 @@
         <!-- Sección de Dirección -->
         <div class="mb-6">
           <h2 class="text-lg font-bold mb-2">Dirección exacta</h2>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-gray-700 text-sm font-medium mb-1">Código Postal *</label>
-              <input type="text" id="codigo_postal" name="cp_derribo" maxlength="5" 
+              <input type="text" id="codigo_postal" name="cp_derribo" maxlength="5"
                      class="w-full p-2 border rounded" required>
               <div id="cp-loading" class="hidden text-blue-500 text-sm mt-1">
                 <i class="fas fa-spinner fa-spin"></i> Buscando datos...
               </div>
             </div>
-            
+
             <div>
               <label class="block text-gray-700 text-sm font-medium mb-1">Alcaldía *</label>
-              <input type="text" id="alcaldia" name="alcaldia_derribo" 
+              <input type="text" id="alcaldia" name="alcaldia_derribo"
                      class="w-full p-2 border rounded bg-gray-50" readonly required>
             </div>
           </div>
-          
+
           <div class="mb-4">
             <label class="block text-gray-700 text-sm font-medium mb-1">Colonia *</label>
-            <select id="colonia" name="colonia_derribo" 
+            <select id="colonia" name="colonia_derribo"
                     class="w-full p-2 border rounded bg-gray-50" required disabled>
-                <option value="">Primero ingresa tu código postal</option>
+              <option value="">Primero ingresa tu código postal</option>
             </select>
           </div>
-          
+
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div class="md:col-span-2">
               <label class="block text-gray-700 text-sm font-medium mb-1">Calle *</label>
-              <input type="text" id="calle" name="calle_derribo" 
+              <input type="text" id="calle" name="calle_derribo"
                      class="w-full p-2 border rounded" required>
             </div>
-            
+
             <div>
               <label class="block text-gray-700 text-sm font-medium mb-1">Número Ext. *</label>
-              <input type="text" id="num_ext" name="numero_ext_derribo" 
+              <input type="text" id="num_ext" name="numero_ext_derribo"
                      class="w-full p-2 border rounded" required>
             </div>
           </div>
-          
+
           <div>
-            <label class="block text-gray-700 text-sm font-medium mb-1">Número Int. (opcional)</label>
-            <input type="text" id="num_int" name="numero_int_derribo" 
+            <label class="block text-gray-700 text-sm font-medium mb-1">Número Int.</label>
+            <input type="text" id="num_int" name="numero_int_derribo"
                    class="w-full p-2 border rounded">
           </div>
         </div>
 
-        <!-- Resto del formulario -->
+        <!-- Motivo de derribo -->
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-2">Motivo de derribo*</label>
           <select name="motivo_derribo" class="w-full p-2 border rounded focus:ring-2 focus:ring-green-500" required>
             <option value="" disabled selected>Seleccione un motivo</option>
-            <option value="inclinado_riesgo">Árbol inclinado o en riesgo de desplome</option>
-            <option value="dano_infraestructura">Árbol daña infraestructura pública o privada</option>
-            <option value="arbol_muerto">Árbol muerto (sin hojas, sin crecimiento)</option>
-            <option value="plagas_enfermedades">Árbol con plagas o enfermedades irreversibles</option>
-            <option value="demasiados_arboles">Demasiados árboles juntos, impidiendo su desarrollo</option>
+            <option value="riesgo">Riesgo de caída</option>
+            <option value="enfermedad">Enfermedad irreversible</option>
+            <option value="construccion">Para construcción</option>
+            <option value="obstruccion">Obstrucción grave</option>
+            <option value="otro">Otro motivo</option>
           </select>
         </div>
-        
+
+        <!-- Ubicación física del árbol -->
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-2">Ubicación del árbol*</label>
           <select name="ubicacion_derribo" class="w-full p-2 border rounded" required>
             <option value="" disabled selected>Seleccione ubicación</option>
             <option value="banqueta">Banqueta</option>
             <option value="camellon">Camellón</option>
-            <option value="glorieta">Glorieta</option>
-            <option value="parque">Parque</option>
-            <option value="arriate">Arriate</option>
-            <option value="plaza">Plaza</option>
             <option value="propiedad_privada">Propiedad privada</option>
-            <option value="obra_civil">Obra civil</option>
+            <option value="area_publica">Área pública</option>
           </select>
         </div>
-        
+
+        <!-- Fotografía -->
         <div class="mb-4">
-          <label class="block text-gray-700 font-medium mb-2">Fotografía del árbol*</label>
-          <input name="foto_derribo" type="file" accept="image/*" class="w-full p-2 border rounded" required>
-          <p class="text-xs text-gray-500 mt-1">Suba una foto clara del árbol a derribar</p>
-        </div>
-        
+            <label class="block text-gray-700 font-medium mb-2">Fotografía del árbol*</label>
+            <input name="foto_derribo_upload" type="file" accept="image/jpeg,image/png" 
+                   class="w-full p-2 border rounded" required>
+            <p class="text-xs text-gray-500 mt-1">Suba una foto clara (JPEG o PNG, max 5MB)</p>
+          </div>
+
+        <!-- Justificación -->
         <div class="mb-6">
           <label class="block text-gray-700 font-medium mb-2">Justificación detallada*</label>
-          <textarea name="justificacion_derribo" placeholder="Describa en detalle por qué es necesario el derribo..." 
+          <textarea name="justificacion_derribo" placeholder="Describa en detalle por qué es necesario el derribo..."
                     class="w-full p-2 border rounded h-24" required></textarea>
         </div>
-        
-        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded font-medium transition duration-300">
+
+        <button type="submit"
+                class="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded font-medium transition duration-300">
           Enviar solicitud de derribo
         </button>
       </form>
     </div>
   </main>
 
+  <!-- Modal de confirmación -->
   <div id="confirmacionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white p-6 rounded-lg max-w-sm mx-auto">
       <h3 class="text-xl font-bold mb-4">¡Solicitud enviada!</h3>
@@ -148,21 +152,61 @@
     </div>
   </div>
 
-  <!-- Incluir JS -->
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script src="{% static 'js/tramites_mapa.js' %}"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="{% static 'js/tramites_mapa.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('solicitudForm');
+  form.action = "{% url 'derribo:solicitar' %}";
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const lat = parseFloat(document.getElementById('lat_display').value);
+    const lng = parseFloat(document.getElementById('lng_display').value);
 
-  <script>
-    // Manejo del formulario
-    document.getElementById('solicitudForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      document.getElementById('confirmacionModal').classList.remove('hidden');
-    });
-
-    function cerrarModal() {
-      document.getElementById('confirmacionModal').classList.add('hidden');
-      window.location.href = "{% url 'arbol:inicio' %}";
+    if (!validarCoordenadas(lat, lng)) {
+      alert('Por favor ingrese coordenadas válidas');
+      return;
     }
-  </script>
+    const formData = new FormData(form);
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      });
+      const data = await response.json();
+      if (data.success) {
+        const modal = document.getElementById('confirmacionModal');
+        modal.classList.remove('hidden');
+        modal.querySelector('button').onclick = () => {
+          window.location.href = data.redirect_url || "{% url 'arbol:inicio' %}";
+        };
+      } else {
+        let errorMessage = data.message || 'Error al enviar la solicitud';
+        if (data.errors) {
+          errorMessage += '\n' + Object.values(data.errors)
+            .map(err => err[0]?.message || err[0])
+            .join('\n');
+        }
+        alert(errorMessage);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión. Por favor intenta nuevamente.');
+    }
+  });
+});
+
+function validarCoordenadas(lat, lng) {
+  return !isNaN(lat) && !isNaN(lng) &&
+         lat >= -90 && lat <= 90 &&
+         lng >= -180 && lng <= 180;
+}
+
+function cerrarModal() {
+  document.getElementById('confirmacionModal').classList.add('hidden');
+  window.location.href = "{% url 'arbol:inicio' %}";
+}
+</script>
 </body>
 </html>
