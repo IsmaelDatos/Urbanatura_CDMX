@@ -11,4 +11,5 @@ urlpatterns = [
     path('eliminar/<int:id>/', views.eliminar_arbol, name='eliminar_arbol'),
     path('documentacion/', views.documentacion, name='documentacion'),
     path('informacion_empresa/', views.informacion_empresa, name='informacion_empresa'),
+    path('datos-mapa/', views.datos_mapa, name='datos_mapa'),
 ]

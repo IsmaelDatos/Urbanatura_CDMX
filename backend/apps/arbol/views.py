@@ -7,12 +7,19 @@ from django.http import JsonResponse
 import base64
 from django.conf import settings
 from django.db import transaction, IntegrityError
+import logging
+from apps.poda.models import SolicitudPoda
+from apps.derribo.models import SolicitudDerribo
+
+logger = logging.getLogger(__name__)
 
 def inicio(request):
     return render(request, 'arboles/inicio.html')
 
 def agregar_arbol(request):
+    logger.debug(f"Request method: {request.method}")
     if request.method == "POST":
+        logger.debug("POST request received")
         form = ArbolForm(request.POST, request.FILES, request=request)
         try:
             with transaction.atomic():
@@ -71,7 +78,7 @@ def agregar_arbol(request):
                 response_data = {
                     "success": True,
                     "message": "Árbol registrado exitosamente",
-                    "redirect_url": reverse("arbol:lista_arboles"),
+                    "redirect_url": request.build_absolute_uri(reverse("arbol:lista_arboles")),
                     "arbol_id": arbol.id,
                 }
                 if request.headers.get("X-Requested-With") == "XMLHttpRequest":
@@ -86,6 +93,8 @@ def agregar_arbol(request):
             return redirect("arbol:agregar_arbol")
     form = ArbolForm(request=request)
     return render(request, "arboles/agregar_arbol.html", {"form": form})
+    logger.debug(f"Redirecting to: {response_data['redirect_url']}")
+    return JsonResponse(response_data)
 
 def modificar_arbol(request, id):
     arbol = get_object_or_404(Arbol, id=id)
@@ -93,8 +102,6 @@ def modificar_arbol(request, id):
         form = ArbolForm(request.POST, request.FILES, instance=arbol)
         if form.is_valid():
             arbol_actualizado = form.save(commit=False)
-            
-            # Procesar nuevas imágenes a Base64 (solo si se suben)
             for i in range(1, 6):
                 foto_field = f'foto{i}'
                 if foto_field in request.FILES:
@@ -127,3 +134,22 @@ def documentacion(request):
 
 def informacion_empresa(request):
     return render(request, 'arboles/informacion_empresa.html')
+
+def datos_mapa(request):
+    arboles = Arbol.objects.all().values(
+        'id', 'latitud', 'longitud', 'diametro_tronco', 'condicion_general'
+    )
+    
+    podas = SolicitudPoda.objects.all().values(
+        'id', 'latitud', 'longitud'
+    )
+    
+    derribos = SolicitudDerribo.objects.all().values(
+        'id', 'latitud', 'longitud'
+    )
+    
+    return JsonResponse({
+        'arboles': list(arboles),
+        'podas': list(podas),
+        'derribos': list(derribos)
+    })

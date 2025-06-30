@@ -9,8 +9,13 @@
     <link rel="stylesheet" href="{% static 'css/inicio.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <!-- Nuestro CSS del mapa -->
+    <link rel="stylesheet" href="{% static 'css/mapa_inicio.css' %}">
 </head>
 <body>
     {% include 'navbar.html' %}
@@ -22,18 +27,56 @@
         </div>
         
         <div class="mapa-container">
-            <h2>Mapa del Arbolado</h2>
-            <!-- Cambia el div para tener un ID en lugar de clase -->
-            <div id="mapa" style="height: 500px; width: 100%;"></div>
+            <div class="mapa-header">
+                <h2>Mapa del Arbolado</h2>
+            </div>
+            
+            <!-- Contenedor del mapa con controles de capas -->
+            <div id="mapa"></div>
+            
+            <!-- Leyenda del mapa -->
+            <div class="mapa-leyenda">
+                <div class="leyenda-item">
+                    <span class="leyenda-color" style="background-color: #4CAF50;"></span>
+                    <span>Muy buena condición</span>
+                </div>
+                <div class="leyenda-item">
+                    <span class="leyenda-color" style="background-color: #8BC34A;"></span>
+                    <span>Buena condición</span>
+                </div>
+                <div class="leyenda-item">
+                    <span class="leyenda-color" style="background-color: #FFC107;"></span>
+                    <span>Susceptible de mejora</span>
+                </div>
+                <div class="leyenda-item">
+                    <span class="leyenda-color" style="background-color: #9E9E9E;"></span>
+                    <span>Irrecuperable</span>
+                </div>
+                <div class="leyenda-item">
+                    <img src="{% static 'img/poda-icon.png' %}" alt="Poda" class="leyenda-icon">
+                    <span>Podas</span>
+                </div>
+                <div class="leyenda-item">
+                    <img src="{% static 'img/derribo-icon.png' %}" alt="Derribo" class="leyenda-icon">
+                    <span>Derribos</span>
+                </div>
+            </div>
         </div>
         
         <div class="botones">
-            <a href="{% url 'arbol:agregar_arbol' %}" class="btn">Agregar Árbol</a>
-            <a href="{% url 'arbol:lista_arboles' %}" class="btn">Ver Lista Completa</a>
+            <a href="{% url 'arbol:agregar_arbol' %}" class="btn">
+                <i class="fas fa-tree"></i> Agregar Árbol
+            </a>
+            <a href="{% url 'arbol:lista_arboles' %}" class="btn">
+                <i class="fas fa-list"></i> Ver Lista Completa
+            </a>
         </div>
     </main>
 
-    <!-- Añade tu script al final del body -->
+    <!-- Scripts necesarios -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <!-- Nuestro JS del mapa -->
     <script src="{% static 'js/mapa_inicio.js' %}"></script>
 </body>
 </html>
