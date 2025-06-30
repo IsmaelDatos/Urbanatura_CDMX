@@ -18,6 +18,7 @@ RUN pip install --user --no-cache-dir gunicorn==21.2.0 && \
 
 # Stage 2: Runtime
 FROM python:3.9-slim
+
 # Runtime dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -30,24 +31,26 @@ ENV PYTHONUNBUFFERED=1 \
     PORT=8000 \
     PATH="/root/.local/bin:${PATH}"
 
-# Copiar desde el builder incluyendo los estáticos
+# Copiar TODO el proyecto manteniendo la estructura exacta
 COPY --from=builder /root/.local /root/.local
 COPY --from=builder /app/backend /app
 
-# Crear directorios y permisos (importante)
-RUN mkdir -p /app/static /app/media && \
-    chown -R nobody:nogroup /app && \
-    chmod -R 755 /app
-
+# Configuración ESPECÍFICA para tus estáticos (sin staticfiles)
+RUN mkdir -p /app/media && \
+    # Permisos explícitos solo para la carpeta static
+    chmod -R 755 /app/urbanatura_cdmx/static && \
+    # Asegurar que los archivos puedan ser leídos
+    find /app/urbanatura_cdmx/static -type f -exec chmod 644 {} \; && \
+    # Usuario correcto
+    chown -R nobody:nogroup /app
 
 WORKDIR /app
 
-# Expose port
 EXPOSE $PORT
 
-# Health check (opcional pero recomendado)
+# Health check mejorado
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:$PORT/ || exit 1
+    CMD curl -f http://localhost:$PORT/static/css/base.css || exit 1
 
-# Run command
-CMD ["gunicorn", "urbanatura_cdmx.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Comando de inicio optimizado
+CMD ["sh", "-c", "gunicorn urbanatura_cdmx.wsgi:application --bind 0.0.0.0:8000"]
