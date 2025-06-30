@@ -2,6 +2,8 @@ app = "urbanatura-cdmx"
 
 [build]
   dockerfile = "Dockerfile"
+  context = "backend"
+
 
 [env]
   DJANGO_SETTINGS_MODULE = "urbanatura_cdmx.settings"
