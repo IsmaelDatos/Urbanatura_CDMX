@@ -9,11 +9,16 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY . .
 
+# Copiamos solo la carpeta backend para que manage.py esté dentro de /app/backend
+COPY backend ./backend
+
+# Instalar dependencias
 RUN pip install --user --no-cache-dir gunicorn==21.2.0 && \
-    pip install --user --no-cache-dir -r requirements.txt
+    pip install --user --no-cache-dir -r backend/requirements.txt
 
+# Ejecutar collectstatic desde la ruta correcta
+WORKDIR /app/backend
 RUN python manage.py collectstatic --noinput --clear
 
 # Stage 2: Runtime
@@ -31,12 +36,12 @@ ENV PYTHONUNBUFFERED=1 \
 COPY --from=builder /root/.local /root/.local
 COPY --from=builder /app /app
 
-RUN chmod -R 755 /app/staticfiles && \
-    chmod -R 755 /app/media && \
-    find /app/staticfiles -type f -exec chmod 644 {} \; && \
-    chown -R nobody:nogroup /app
+WORKDIR /app/backend
 
-WORKDIR /app
+RUN chmod -R 755 /app/backend/staticfiles && \
+    chmod -R 755 /app/backend/media && \
+    find /app/backend/staticfiles -type f -exec chmod 644 {} \; && \
+    chown -R nobody:nogroup /app
 
 EXPOSE $PORT
 
