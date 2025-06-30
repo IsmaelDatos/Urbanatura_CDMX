@@ -18,7 +18,6 @@ RUN pip install --user --no-cache-dir gunicorn==21.2.0 && \
 
 # Stage 2: Runtime
 FROM python:3.9-slim
-
 # Runtime dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -31,13 +30,15 @@ ENV PYTHONUNBUFFERED=1 \
     PORT=8000 \
     PATH="/root/.local/bin:${PATH}"
 
-# Copy from builder
+# Copiar desde el builder incluyendo los estáticos
 COPY --from=builder /root/.local /root/.local
 COPY --from=builder /app/backend /app
 
-# Create directories
+# Crear directorios y permisos (importante)
 RUN mkdir -p /app/static /app/media && \
-    chmod -R a+rwx /app/media /app/static
+    chown -R nobody:nogroup /app && \
+    chmod -R 755 /app
+
 
 WORKDIR /app
 
